@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Quest 🎤 | Hero's Proof</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#3a2558;--bg2:#2a1845;--panel2:#1e1235;
+  --cream:#f5eedc;--card-bg:rgba(245,238,220,0.97);--border-gold:rgba(245,158,11,0.25);
+  --purple:#9060c0;--purple-light:#c8a0e0;--purple-pale:#ede0f8;--purple-dark:#4a3870;
+  --gold:#c9a030;--gold-light:#f0d060;--gold-pale:#f8f0c0;
+  --brown:#5c2810;--text-dark:#1e1235;--text-soft:#3a2558;--text-muted:rgba(200,160,224,.75);
+  --green:#4a9040;--green-pale:#d0e8b0;--red:#c83030;--red-pale:#fee2e2;
+  --shadow:rgba(0,0,0,0.4);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Fredoka','Kosugi Maru','Zen Maru Gothic',sans-serif;
+  background:var(--bg);color:var(--text-dark);
+  min-height:100dvh;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;padding:16px 12px 48px;overflow-x:hidden;
+  user-select:none;-webkit-user-select:none;
+}
+.starfield{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.starfield span{position:absolute;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s);display:flex;align-items:center;justify-content:center;font-size:var(--sz,1rem);color:var(--col,#fde68a);text-shadow:0 0 6px var(--col,#fde68a);line-height:1;}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0deg);}50%{opacity:.9;transform:scale(1) rotate(20deg);}}
+.container{position:relative;z-index:1;width:min(640px,95vw);display:flex;flex-direction:column;align-items:center;}
+ruby rt{font-size:.55em;color:inherit;opacity:.75;}
+button{cursor:pointer;font-family:inherit;}
+.hidden{display:none!important;}
+
+/* ── title header ── */
+.title-header{text-align:center;margin-bottom:14px;width:100%;}
+.title-logo-img{max-height:130px;max-width:92%;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 2px 16px rgba(167,139,250,.5));}
+.title-game-name{font-family:'Press Start 2P',monospace;font-size:clamp(.8rem,3.5vw,1.1rem);color:#fff;text-shadow:0 0 24px rgba(167,139,250,.7),0 2px 4px rgba(0,0,0,.5);line-height:1.7;}
+.title-sub{font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;font-size:clamp(.88rem,2.5vw,1.05rem);color:var(--gold-light);font-weight:600;letter-spacing:.12em;margin-top:4px;}
+.header-divider{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:10px auto 0;opacity:.6;}
+
+/* ── cream panels ── */
+.panel{width:100%;background:var(--card-bg);border:1px solid var(--border-gold);border-radius:20px;box-shadow:0 4px 24px var(--shadow),inset 0 1px 0 rgba(255,255,255,.8);padding:18px 18px 22px;}
+
+/* ── Lumi intro card ── */
+.sc-card{display:flex;gap:14px;align-items:center;text-align:left;margin-bottom:14px;}
+.sc-lumi{width:64px;height:64px;flex-shrink:0;object-fit:cover;border-radius:10px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));animation:embFloat 3s ease-in-out infinite;}
+@keyframes embFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.sc-name{font-family:'Press Start 2P',monospace;font-size:.5rem;color:var(--purple);margin-bottom:5px;}
+.sc-en{font-size:.9rem;font-weight:700;color:var(--text-dark);line-height:1.5;margin-bottom:3px;}
+.sc-jp{font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-soft);line-height:1.75;}
+
+/* ── chunky hub buttons ── */
+.btn{font-family:'Press Start 2P',monospace;font-size:clamp(.5rem,1.8vw,.66rem);background:linear-gradient(135deg,var(--purple-pale),#d8c8f0);color:var(--text-dark);border:2px solid var(--purple);border-radius:14px;padding:14px 24px;box-shadow:0 4px 0 #6840a0;transition:transform .1s,box-shadow .1s;letter-spacing:.04em;}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #6840a0;}
+.btn.gold{background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));border-color:var(--gold);box-shadow:0 4px 0 #a07820;color:var(--brown);}
+.btn.gold:active{box-shadow:0 1px 0 #a07820;}
+.mode-btn{display:block;width:100%;margin:10px 0;padding:15px 16px;border-radius:16px;text-align:left;
+  background:linear-gradient(135deg,var(--purple-pale),#d8c8f0);border:2px solid var(--purple);box-shadow:0 4px 0 #6840a0;transition:transform .1s,box-shadow .1s;}
+.mode-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #6840a0;}
+.mode-btn .en{font-family:'Press Start 2P',monospace;font-size:.6rem;color:var(--purple-dark);display:block;margin-bottom:6px;letter-spacing:.05em;}
+.mode-btn .ja{font-family:'Zen Maru Gothic',sans-serif;font-size:1.02rem;font-weight:900;color:var(--text-dark);}
+.mode-btn .desc{display:block;font-family:'Zen Maru Gothic',sans-serif;font-size:.76rem;font-weight:700;color:var(--text-soft);margin-top:5px;line-height:1.6;}
+.mode-btn .desc-en{display:block;font-family:'Fredoka',sans-serif;font-size:.74rem;font-weight:600;color:var(--text-soft);margin-top:6px;line-height:1.45;opacity:.9;}
+.mode-btn.gold{background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));border-color:var(--gold);box-shadow:0 4px 0 #a07820;}
+.mode-btn.gold:active{box-shadow:0 1px 0 #a07820;}
+.mode-btn.gold .en{color:var(--brown);}
+.mode-btn.trial{background:linear-gradient(135deg,#4a3870,#6840a0);border-color:var(--purple-light);box-shadow:0 4px 0 #2a1845;}
+.mode-btn.trial .en{color:var(--gold-light);}
+.mode-btn.trial .ja,.mode-btn.trial .desc{color:#f3ebff;}
+.tiny{font-family:'Zen Maru Gothic',sans-serif;font-size:.72rem;font-weight:700;color:var(--text-soft);margin-top:12px;line-height:1.8;text-align:center;}
+.stars-row{font-family:'Zen Maru Gothic',sans-serif;font-size:.9rem;color:var(--brown);font-weight:900;margin-top:8px;text-align:center;}
+
+/* ── picker ── */
+.pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.pick-btn{padding:12px 8px;border-radius:12px;border:2px solid var(--border-gold);background:rgba(255,255,255,.75);font-family:'Zen Maru Gothic',sans-serif;font-size:.8rem;font-weight:900;color:var(--text-dark);line-height:1.45;box-shadow:0 3px 0 rgba(160,120,32,.35);transition:transform .1s,box-shadow .1s;}
+.pick-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(160,120,32,.35);}
+.pick-btn small{display:block;color:var(--text-soft);font-weight:700;font-size:.68rem;margin-top:2px;}
+.back-btn{background:rgba(30,18,53,.08);border:1.5px solid rgba(74,56,112,.3);border-radius:50px;color:var(--purple-dark);font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:.82rem;padding:7px 16px;}
+.pick-title{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:1rem;margin:10px 0 0;color:var(--text-dark);}
+
+/* ── game HUD (dark panel like word_quest) ── */
+.hud{width:100%;background:linear-gradient(160deg,#2a1845 0%,#1e1235 100%);border:1px solid rgba(167,139,250,.2);border-radius:16px;padding:10px 14px 12px;box-shadow:0 4px 20px rgba(0,0,0,.4);margin-bottom:12px;color:#efe6ff;}
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:.86rem;}
+.hud .hearts .lost{opacity:.3;}
+.gauge-track{height:16px;background:rgba(0,0,0,.35);border-radius:50px;overflow:hidden;border:1px solid rgba(167,139,250,.2);box-shadow:inset 0 2px 6px rgba(0,0,0,.4);margin-top:8px;}
+.gauge-fill{height:100%;width:0%;border-radius:50px;background:linear-gradient(90deg,var(--purple-dark),var(--purple-light));transition:width .3s cubic-bezier(.34,1.56,.64,1);}
+
+/* ── question card ── */
+.qcard{text-align:center;}
+.q-en{font-family:'Fredoka','Zen Maru Gothic',sans-serif;font-size:1.55rem;font-weight:700;margin:6px 0 2px;line-height:1.4;color:var(--text-dark);}
+.q-yomi{font-family:'Zen Maru Gothic',sans-serif;font-size:.72rem;color:var(--text-soft);font-weight:700;margin:0 0 4px;opacity:.85;}
+.q-jp{font-family:'Zen Maru Gothic',sans-serif;font-size:.95rem;color:var(--text-soft);font-weight:700;margin:0 0 12px;}
+.tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0;}
+.say-btn,.echo-btn{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:.92rem;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));border:2px solid var(--gold);border-radius:14px;padding:12px 16px;color:var(--brown);box-shadow:0 4px 0 #a07820;transition:transform .1s,box-shadow .1s;position:relative;}
+.say-btn:active,.echo-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a07820;}
+.mic-btn{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:1.02rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border:2px solid var(--purple-dark);border-radius:14px;padding:13px 20px;color:#fff;box-shadow:0 4px 0 #4a3870;transition:transform .1s,box-shadow .1s;position:relative;}
+.mic-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #4a3870;}
+.mic-btn.rec{animation:micpulse 1s infinite;background:linear-gradient(135deg,#e88,#f8dede);color:var(--text-dark);border-color:var(--red);}
+.mic-btn.rec::after{content:'';position:absolute;inset:-5px;border:2px solid var(--red);border-radius:18px;animation:micRipple 1s ease-out infinite;pointer-events:none;}
+@keyframes micpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+@keyframes micRipple{0%{opacity:.85;transform:scale(1);}100%{opacity:0;transform:scale(1.4);}}
+@keyframes zap{0%{transform:scale(1);}40%{transform:scale(1.35);filter:drop-shadow(0 0 8px var(--gold));}100%{transform:scale(1);}}
+.zap{animation:zap .38s ease;}
+#wave{display:block;margin:8px auto;background:rgba(30,18,53,.08);border-radius:10px;border:1.5px dashed rgba(74,56,112,.35);}
+.diff{font-family:'Fredoka',sans-serif;font-size:1.2rem;font-weight:700;line-height:1.8;margin:10px 0 2px;}
+.diff .hit{color:var(--green);}
+.diff .miss{color:var(--red);text-decoration:underline dotted;}
+.heardline{font-family:'Zen Maru Gothic',sans-serif;font-size:.84rem;color:var(--text-soft);font-weight:700;margin:2px 0 10px;}
+.echo-row{display:flex;gap:10px;justify-content:center;margin:10px 0 4px;flex-wrap:wrap;}
+.next-btn{font-family:'Press Start 2P',monospace;font-size:.62rem;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));color:var(--brown);border:2px solid var(--gold);border-radius:14px;padding:14px 26px;box-shadow:0 4px 0 #a07820;margin-top:12px;transition:transform .1s,box-shadow .1s;letter-spacing:.04em;}
+.next-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a07820;}
+.skip-btn{background:none;border:none;color:var(--text-soft);font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:.82rem;text-decoration:underline;margin-top:10px;}
+.tier-note{font-size:.74rem;color:var(--text-muted);text-align:center;margin-top:8px;font-weight:700;}
+
+/* ── anchor trial circle ── */
+.circle-wrap{position:relative;display:flex;justify-content:center;margin:2px 0 12px;}
+.mcircle{width:150px;height:150px;transform:rotate(-90deg);position:relative;z-index:1;}
+.mcircle .seg{fill:none;stroke:rgba(74,56,112,.22);stroke-width:11;stroke-linecap:round;}
+.mcircle .seg.lit{stroke:var(--gold);filter:drop-shadow(0 0 6px var(--gold-light));}
+.mcircle.complete{animation:circlePulse 1.4s ease-in-out infinite;}
+@keyframes circlePulse{0%,100%{filter:drop-shadow(0 0 8px var(--gold-light));transform:rotate(-90deg) scale(1);}50%{filter:drop-shadow(0 0 26px var(--purple-light));transform:rotate(-90deg) scale(1.06);}}
+.circle-lumi{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92px;height:92px;object-fit:contain;z-index:0;filter:grayscale(1) opacity(.5);transition:filter .6s ease;pointer-events:none;border-radius:50%;}
+.circle-lumi.lit{filter:grayscale(0) opacity(1);animation:lumiGlow 1.5s ease-in-out infinite;}
+@keyframes lumiGlow{0%,100%{filter:drop-shadow(0 0 8px var(--gold-light)) grayscale(0);}50%{filter:drop-shadow(0 0 22px var(--purple-light)) grayscale(0);}}
+
+/* ── results ── */
+.res-item{font-family:'Zen Maru Gothic',sans-serif;font-size:.82rem;font-weight:700;color:var(--text-soft);border-bottom:1px dashed rgba(138,103,18,.3);padding:7px 2px;text-align:left;}
+.res-item b{color:var(--text-dark);}
+.res-head-en{font-family:'Press Start 2P',monospace;font-size:.8rem;color:var(--purple-dark);margin:8px 0;}
+.res-sub{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:.95rem;color:var(--text-soft);}
+
+/* ── fx + popup ── */
+.flashfx{position:fixed;inset:0;pointer-events:none;z-index:9999;background:radial-gradient(circle,rgba(255,246,200,.95),rgba(255,215,80,.55) 45%,rgba(255,255,255,0) 75%);opacity:0;animation:flashfx .6s ease-out forwards;}
+.flashfx.big{animation-duration:.9s;}
+@keyframes flashfx{0%{opacity:0;}18%{opacity:1;}100%{opacity:0;}}
+.voice-pop{position:fixed;inset:0;z-index:9000;background:rgba(10,5,25,.6);display:flex;align-items:center;justify-content:center;padding:20px;animation:vpfade .18s ease;}
+@keyframes vpfade{from{opacity:0;}to{opacity:1;}}
+.vp-card{background:var(--card-bg);border:2px solid var(--border-gold);border-radius:20px;padding:22px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 14px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.8);animation:vppop .22s ease;}
+@keyframes vppop{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.vp-card.ok{border-color:var(--green);}
+.vp-card.ng{border-color:var(--red);}
+.vp-icon{font-size:2.6rem;margin-bottom:6px;}
+.vp-label{font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:.92rem;color:var(--text-soft);margin:0 0 8px;}
+.vp-heard{font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text-dark);margin:0 0 10px;line-height:1.5;word-break:break-word;}
+.vp-target{font-family:'Zen Maru Gothic',sans-serif;font-size:.85rem;color:var(--text-soft);margin:0 0 12px;}
+.vp-close{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));color:var(--brown);border:2px solid var(--gold);border-radius:12px;padding:11px 22px;font-weight:900;font-size:1rem;box-shadow:0 3px 0 #a07820;}
+</style>
+</head>
+<body>
+<div class="starfield" id="starfield"></div>
+<div class="container">
+
+  <div class="title-header">
+    <img class="title-logo-img" src="logo.png" alt="Hero's Proof" onerror="this.style.display='none'">
+    <div class="title-game-name">SPEAKING QUEST<br>スピーキング・クエスト</div>
+    <div class="title-sub">✦ Voice Training · こえのトレーニング ✦</div>
+    <div class="header-divider"></div>
+  </div>
+
+  <div id="title" class="panel">
+    <div class="sc-card">
+      <img class="sc-lumi" src="assets/char/story/lumi-chibi.png" alt="Lumi"
+           onerror="this.onerror=null;this.src='lumi.png';">
+      <div>
+        <div class="sc-name">Lumi / ルミ</div>
+        <div class="sc-en">Listen to my model, then say it into the mic! Your voice is recorded too, so you can compare it with mine 🎤✨</div>
+        <div class="sc-jp">おてほんを きいて、マイクに むかって いってみて！きみの こえも きろくして、私(わたし)と ききくらべ できるよ🎤✨</div>
+      </div>
+    </div>
+    <button class="mode-btn gold" id="m-word"><span class="en">WORD ECHO 🎴</span><span class="ja">ことばエコー</span><span class="desc-en">One word at a time. Pick a category — 10 rounds!</span><span class="desc">たんごを 1つずつ。カテゴリを えらんで 10もん！</span></button>
+    <button class="mode-btn" id="m-spell"><span class="en">SPELL ECHO 🔮</span><span class="ja">じゅもんエコー</span><span class="desc-en">Full sentences from the story. Pick a stage — 10 rounds!</span><span class="desc">ものがたりの フルセンテンス。ステージを えらんで 10もん！</span></button>
+    <button class="mode-btn trial" id="m-trial"><span class="en">ANCHOR TRIAL 👑</span><span class="ja">アンカーの試練(しれん)</span><span class="desc-en">7 spells × 5 hearts. Complete the magic circle!</span><span class="desc">7つの じゅもん × ハート5こ。まほうじんを 完成(かんせい)させよ！</span></button>
+    <div class="stars-row" id="star-row"></div>
+    <p class="tiny">🔒 Your voice stays on this screen only — nothing is uploaded, and it disappears when you close.<br>きみの こえは この画面(がめん)の中(なか)だけ。どこにも おくられません。とじたら きえます。</p>
+    <p class="tiny" id="tier-title" style="margin-top:2px;"></p>
+  </div>
+
+  <div id="picker" class="panel hidden">
+    <button class="back-btn" data-back="title">← Back / もどる</button>
+    <p class="pick-title" id="pick-title"></p>
+    <div class="pick-grid" id="pick-grid"></div>
+  </div>
+
+  <div id="game" style="width:100%" class="hidden">
+    <div class="hud">
+      <div class="hud-row">
+        <button class="back-btn" data-back="title" style="background:rgba(245,238,220,.12);border-color:rgba(200,160,224,.4);color:#e6d9ff;">← Quit / やめる</button>
+        <span id="hud-mid" class="tier-note"></span>
+        <span id="hud-right"></span>
+      </div>
+      <div class="gauge-track" id="gauge-wrap"><div class="gauge-fill" id="gauge"></div></div>
+    </div>
+    <div class="panel">
+      <div id="trial-circle" class="circle-wrap hidden"></div>
+      <div class="qcard" id="qcard"></div>
+    </div>
+  </div>
+
+  <div id="results" class="panel hidden">
+    <div id="res-body"></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="next-btn" id="res-again">↺ RETRY / もういちど</button>
+      <button class="next-btn" id="res-home" style="background:linear-gradient(135deg,var(--purple-pale),#d8c8f0);color:var(--text-dark);border-color:var(--purple);box-shadow:0 4px 0 #6840a0;">🏠 TITLE / タイトル</button>
+    </div>
+  </div>
+
+</div>
+<script>
+/* starfield */
+(function(){
+  const sf=document.getElementById('starfield');
+  const glyphs=['✦','✧','⋆','✴','★','✸','·','✦','✧'];
+  const colors=['#f0d060','#c9a030','#d9c9a8','#f0d060','#c8a0e0','#f8f0c0'];
+  for(let i=0;i<70;i++){
+    const s=document.createElement('span');
+    const sz=(Math.random()*1.2+0.5).toFixed(2);
+    s.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+    s.style.cssText=`top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*5}s;--delay:-${Math.random()*7}s;--sz:${sz}rem;--col:${colors[Math.floor(Math.random()*colors.length)]};`;
+    sf.appendChild(s);
+  }
+})();
+const SQ_WORDS=[{"w":"hero","m":"ヒーロー・勇者(ゆうしゃ)","k":"ヒーロー","p":"ˈhɪroʊ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"magic","m":"魔法(まほう)","k":"マジック","p":"ˈmædʒɪk","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"world","m":"世界(せかい)","k":"ワールド","p":"wɜːrld","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"mage","m":"魔法使(まほうつか)い","k":"メイジ","p":"meɪdʒ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"wand","m":"杖(つえ)","k":"ワンド","p":"wɑːnd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"anchor","m":"錨(いかり)","k":"アンカー","p":"ˈæŋkər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"crack","m":"ひび","k":"クラック","p":"kræk","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"ready","m":"準備(じゅんび)OK","k":"レディ","p":"ˈrɛdi","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":0},{"w":"hello","m":"こんにちは","k":"ハロー","p":"həˈloʊ","c":"👋 あいさつ","s":0},{"w":"hi","m":"やあ","k":"ハイ","p":"haɪ","c":"👋 あいさつ","s":0},{"w":"good morning","m":"おはよう","k":"グッド モーニング","p":"ɡʊd ˈmɔːrnɪŋ","c":"👋 あいさつ","s":0},{"w":"good afternoon","m":"こんにちは（昼(ひる)）","k":"グッド アフタヌーン","p":"ɡʊd ˌæftərˈnuːn","c":"👋 あいさつ","s":0},{"w":"good evening","m":"こんばんは","k":"グッド イーブニング","p":"ɡʊd ˈiːvnɪŋ","c":"👋 あいさつ","s":0},{"w":"good night","m":"おやすみ","k":"グッド ナイト","p":"ɡʊd naɪt","c":"👋 あいさつ","s":0},{"w":"goodbye","m":"さようなら","k":"グッバイ","p":"ɡʊdˈbaɪ","c":"👋 あいさつ","s":0},{"w":"see you","m":"またね","k":"シー ユー","p":"siː juː","c":"👋 あいさつ","s":0},{"w":"please","m":"おねがいします","k":"プリーズ","p":"pliːz","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"sorry","m":"ごめんなさい","k":"ソーリー","p":"ˈsɑːri","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"thank you","m":"ありがとう","k":"サンク ユー","p":"θæŋk juː","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"you're welcome","m":"どういたしまして","k":"ユア ウェルカム","p":"jʊr ˈwɛlkəm","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"excuse me","m":"すみません","k":"イクスキューズ ミー","p":"ɪkˈskjuːz miː","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"OK","m":"だいじょうぶ・オッケー","k":"オウケイ","p":"ˌoʊˈkeɪ","c":"🏫 教室(きょうしつ)のことば","s":0},{"w":"one","m":"1","k":"ワン","p":"wʌn","c":"🔢 数(かず) 1〜12","s":0},{"w":"two","m":"2","k":"トゥー","p":"tuː","c":"🔢 数(かず) 1〜12","s":0},{"w":"three","m":"3","k":"スリー","p":"θriː","c":"🔢 数(かず) 1〜12","s":0},{"w":"four","m":"4","k":"フォー","p":"fɔːr","c":"🔢 数(かず) 1〜12","s":0},{"w":"five","m":"5","k":"ファイブ","p":"faɪv","c":"🔢 数(かず) 1〜12","s":0},{"w":"six","m":"6","k":"シックス","p":"sɪks","c":"🔢 数(かず) 1〜12","s":0},{"w":"seven","m":"7","k":"セブン","p":"ˈsɛvən","c":"🔢 数(かず) 1〜12","s":0},{"w":"eight","m":"8","k":"エイト","p":"eɪt","c":"🔢 数(かず) 1〜12","s":0},{"w":"nine","m":"9","k":"ナイン","p":"naɪn","c":"🔢 数(かず) 1〜12","s":0},{"w":"ten","m":"10","k":"テン","p":"tɛn","c":"🔢 数(かず) 1〜12","s":0},{"w":"eleven","m":"11","k":"イレブン","p":"ɪˈlɛvən","c":"🔢 数(かず) 1〜12","s":0},{"w":"twelve","m":"12","k":"トゥエルブ","p":"twɛlv","c":"🔢 数(かず) 1〜12","s":0},{"w":"Monday","m":"月曜日(げつようび)","k":"マンデー","p":"ˈmʌndeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Tuesday","m":"火曜日(かようび)","k":"テューズデー","p":"ˈtuːzdeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Wednesday","m":"水曜日(すいようび)","k":"ウェンズデー","p":"ˈwɛnzdeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Thursday","m":"木曜日(もくようび)","k":"サーズデー","p":"ˈθɜːrzdeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Friday","m":"金曜日(きんようび)","k":"フライデー","p":"ˈfraɪdeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Saturday","m":"土曜日(どようび)","k":"サタデー","p":"ˈsætərdeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"Sunday","m":"日曜日(にちようび)","k":"サンデー","p":"ˈsʌndeɪ","c":"📅 曜日(ようび)（What day is it?）","s":0},{"w":"sunny","m":"晴(は)れ","k":"サニー","p":"ˈsʌni","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"rainy","m":"雨(あめ)","k":"レイニー","p":"ˈreɪni","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"cloudy","m":"くもり","k":"クラウディ","p":"ˈklaʊdi","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"snowy","m":"雪(ゆき)","k":"スノウイ","p":"ˈsnoʊi","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"hot","m":"暑(あつ)い","k":"ホット","p":"hɑːt","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"cold","m":"寒(さむ)い","k":"コウルド","p":"koʊld","c":"☀️ 天気(てんき)（How is the weather?）","s":0},{"w":"cape","m":"マント","k":"ケイプ","p":"keɪp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"area","m":"エリア・地域(ちいき)","k":"エリア","p":"ˈɛriə","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"crystal","m":"水晶(すいしょう)","k":"クリスタル","p":"ˈkrɪstəl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"guardian","m":"守護者(しゅごしゃ)","k":"ガーディアン","p":"ˈɡɑːrdiən","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"seal","m":"封印(ふういん)する","k":"シール","p":"siːl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"fly","m":"飛(と)ぶ","k":"フライ","p":"flaɪ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"jump","m":"ジャンプする","k":"ジャンプ","p":"dʒʌmp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"scared","m":"こわがっている","k":"スケアード","p":"skɛrd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":1},{"w":"volleyball","m":"バレーボール","k":"バレーボール","p":"ˈvɑːlibɔːl","c":"⚽ スポーツ","s":1},{"w":"soccer","m":"サッカー","k":"サッカー","p":"ˈsɑːkər","c":"⚽ スポーツ","s":1},{"w":"baseball","m":"野球(やきゅう)","k":"ベースボール","p":"ˈbeɪsbɔːl","c":"⚽ スポーツ","s":1},{"w":"basketball","m":"バスケットボール","k":"バスケットボール","p":"ˈbæskɪtbɔːl","c":"⚽ スポーツ","s":1},{"w":"tennis","m":"テニス","k":"テニス","p":"ˈtɛnɪs","c":"⚽ スポーツ","s":1},{"w":"table tennis","m":"卓球(たっきゅう)","k":"テイブル テニス","p":"ˈteɪbəl ˈtɛnɪs","c":"⚽ スポーツ","s":1},{"w":"skiing","m":"スキー","k":"スキーイング","p":"ˈskiːɪŋ","c":"⚽ スポーツ","s":1},{"w":"swimming","m":"水泳(すいえい)","k":"スウィミング","p":"ˈswɪmɪŋ","c":"⚽ スポーツ","s":1},{"w":"run","m":"走(はし)る","k":"ラン","p":"rʌn","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"swim","m":"泳(およ)ぐ","k":"スウィム","p":"swɪm","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"sing","m":"歌(うた)う","k":"シング","p":"sɪŋ","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"dance","m":"おどる","k":"ダンス","p":"dæns","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"cook","m":"料理(りょうり)する","k":"クック","p":"kʊk","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"draw","m":"絵(え)をかく","k":"ドロー","p":"drɔː","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"skate","m":"スケートする","k":"スケイト","p":"skeɪt","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"speak English","m":"英語(えいご)を話(はな)す","k":"スピーク イングリッシュ","p":"spiːk ˈɪŋɡlɪʃ","c":"🏃 できること（can + 動作(どうさ)）","s":1},{"w":"piano","m":"ピアノ","k":"ピアノウ","p":"piˈænoʊ","c":"🎵 楽器(がっき)","s":1},{"w":"guitar","m":"ギター","k":"ギター","p":"ɡɪˈtɑːr","c":"🎵 楽器(がっき)","s":1},{"w":"recorder","m":"リコーダー","k":"リコーダー","p":"rɪˈkɔːrdər","c":"🎵 楽器(がっき)","s":1},{"w":"drum","m":"たいこ・ドラム","k":"ドラム","p":"drʌm","c":"🎵 楽器(がっき)","s":1},{"w":"dog","m":"犬(いぬ)","k":"ドッグ","p":"dɔːɡ","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"cat","m":"ねこ","k":"キャット","p":"kæt","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"bird","m":"鳥(とり)","k":"バード","p":"bɜːrd","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"fish","m":"魚(さかな)","k":"フィッシュ","p":"fɪʃ","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"rabbit","m":"うさぎ","k":"ラビット","p":"ˈræbɪt","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"panda","m":"パンダ","k":"パンダ","p":"ˈpændə","c":"🐾 動物(どうぶつ)（I like ~ / I have ~）","s":1},{"w":"treasure","m":"宝物(たからもの)","k":"トレジャー","p":"ˈtrɛʒər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"gold","m":"金(きん)・金貨(きんか)","k":"ゴウルド","p":"ɡoʊld","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"nap","m":"お昼寝(ひるね)","k":"ナップ","p":"næp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"proud","m":"誇(ほこ)り高(たか)い","k":"プラウド","p":"praʊd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"map","m":"地図(ちず)","k":"マップ","p":"mæp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"pet","m":"ペット","k":"ペット","p":"pɛt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"birthday","m":"誕生日(たんじょうび)","k":"バースデー","p":"ˈbɜːrθdeɪ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"team","m":"チーム","k":"ティーム","p":"tiːm","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":2},{"w":"big","m":"大(おお)きい","k":"ビッグ","p":"bɪɡ","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"small","m":"小(ちい)さい","k":"スモール","p":"smɔːl","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"kind","m":"やさしい","k":"カインド","p":"kaɪnd","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"strong","m":"強(つよ)い","k":"ストロング","p":"strɔːŋ","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"quiet","m":"静(しず)かな","k":"クワイエット","p":"ˈkwaɪət","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"cool","m":"クールな・かっこいい","k":"クール","p":"kuːl","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"cute","m":"かわいい","k":"キュート","p":"kjuːt","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"scary","m":"こわい","k":"スケアリー","p":"ˈskɛri","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"funny","m":"おもしろい","k":"ファニー","p":"ˈfʌni","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"smart","m":"かしこい","k":"スマート","p":"smɑːrt","c":"✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）","s":2},{"w":"father","m":"お父(とう)さん","k":"ファーザー","p":"ˈfɑːðər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"mother","m":"お母(かあ)さん","k":"マザー","p":"ˈmʌðər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"brother","m":"兄(あに)・弟(おとうと)","k":"ブラザー","p":"ˈbrʌðər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"sister","m":"姉(あね)・妹(いもうと)","k":"シスター","p":"ˈsɪstər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"grandfather","m":"おじいさん","k":"グランドファーザー","p":"ˈɡrændfɑːðər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"grandmother","m":"おばあさん","k":"グランドマザー","p":"ˈɡrændmʌðər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"friend","m":"友達(ともだち)","k":"フレンド","p":"frɛnd","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"teacher","m":"先生(せんせい)","k":"ティーチャー","p":"ˈtiːtʃər","c":"👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）","s":2},{"w":"doctor","m":"医者(いしゃ)","k":"ドクター","p":"ˈdɑːktər","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"singer","m":"歌手(かしゅ)","k":"シンガー","p":"ˈsɪŋər","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"scientist","m":"科学者(かがくしゃ)","k":"サイエンティスト","p":"ˈsaɪəntɪst","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"cook","m":"コック・料理人(りょうりにん)","k":"クック","p":"kʊk","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"student","m":"生徒(せいと)","k":"ステューデント","p":"ˈstuːdənt","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"soccer player","m":"サッカー選手(せんしゅ)","k":"サッカー プレイヤー","p":"ˈsɑːkər ˈpleɪər","c":"💼 しごとのことば（He is a ~ / She is a ~）","s":2},{"w":"castle","m":"お城(しろ)","k":"キャッスル","p":"ˈkæsəl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"king","m":"王様(おうさま)","k":"キング","p":"kɪŋ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"princess","m":"王女(おうじょ)","k":"プリンセス","p":"ˈprɪnsɛs","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"gate","m":"門(もん)","k":"ゲイト","p":"ɡeɪt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"knight","m":"騎士(きし)","k":"ナイト","p":"naɪt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"bread","m":"パン","k":"ブレッド","p":"brɛd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"library","m":"図書館(としょかん)","k":"ライブラリー","p":"ˈlaɪbrɛri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"chew","m":"かむ","k":"チュー","p":"tʃuː","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":3},{"w":"hamburger steak","m":"ハンバーグ","k":"ハンバーガー ステイク","p":"ˈhæmbɜːrɡər steɪk","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"pork cutlet","m":"とんかつ","k":"ポーク カットレット","p":"pɔːrk ˈkʌtlət","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"curry","m":"カレー","k":"カリー","p":"ˈkɜːri","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"rice","m":"ごはん","k":"ライス","p":"raɪs","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"salad","m":"サラダ","k":"サラダ","p":"ˈsæləd","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"soup","m":"スープ","k":"スープ","p":"suːp","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"cake","m":"ケーキ","k":"ケイク","p":"keɪk","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"egg","m":"たまご","k":"エッグ","p":"ɛɡ","c":"🍛 食(た)べ物(もの)（What food do you like?）","s":3},{"w":"red","m":"赤(あか)","k":"レッド","p":"rɛd","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"blue","m":"青(あお)","k":"ブルー","p":"bluː","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"green","m":"緑(みどり)","k":"グリーン","p":"ɡriːn","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"yellow","m":"黄色(きいろ)","k":"イエロウ","p":"ˈjɛloʊ","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"pink","m":"ピンク","k":"ピンク","p":"pɪŋk","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"purple","m":"紫(むらさき)","k":"パープル","p":"ˈpɜːrpəl","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"white","m":"白(しろ)","k":"ホワイト","p":"waɪt","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"black","m":"黒(くろ)","k":"ブラック","p":"blæk","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"orange","m":"オレンジ","k":"オレンジ","p":"ˈɔːrɪndʒ","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"brown","m":"茶色(ちゃいろ)","k":"ブラウン","p":"braʊn","c":"🎨 色(いろ)（What color do you like?）","s":3},{"w":"thirteen","m":"13","k":"サーティーン","p":"ˌθɜːrˈtiːn","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"twenty","m":"20","k":"トゥエンティ","p":"ˈtwɛnti","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"twenty-two","m":"22","k":"トゥエンティトゥー","p":"ˌtwɛntiˈtuː","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"thirty","m":"30","k":"サーティ","p":"ˈθɜːrti","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"fifty","m":"50","k":"フィフティ","p":"ˈfɪfti","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"hundred","m":"100","k":"ハンドレッド","p":"ˈhʌndrəd","c":"🔢 大(おお)きい数(かず)（How many ~?）","s":3},{"w":"English","m":"英語(えいご)","k":"イングリッシュ","p":"ˈɪŋɡlɪʃ","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"math","m":"算数(さんすう)・数学(すうがく)","k":"マス","p":"mæθ","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"science","m":"理科(りか)","k":"サイエンス","p":"ˈsaɪəns","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"music","m":"音楽(おんがく)","k":"ミュージック","p":"ˈmjuːzɪk","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"art","m":"図工(ずこう)・美術(びじゅつ)","k":"アート","p":"ɑːrt","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"P.E.","m":"体育(たいいく)","k":"ピーイー","p":"ˌpiːˈiː","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"history","m":"歴史(れきし)","k":"ヒストリー","p":"ˈhɪstəri","c":"📚 教科(きょうか)（What subject do you like?）","s":3},{"w":"water","m":"水(みず)","k":"ウォーター","p":"ˈwɔːtər","c":"🥤 のみもの","s":3},{"w":"tea","m":"お茶(ちゃ)","k":"ティー","p":"tiː","c":"🥤 のみもの","s":3},{"w":"coffee","m":"コーヒー","k":"コーフィー","p":"ˈkɔːfi","c":"🥤 のみもの","s":3},{"w":"juice","m":"ジュース","k":"ジュース","p":"dʒuːs","c":"🥤 のみもの","s":3},{"w":"orange juice","m":"オレンジジュース","k":"オレンジ ジュース","p":"ˈɔːrɪndʒ dʒuːs","c":"🥤 のみもの","s":3},{"w":"lamp","m":"ランプ","k":"ランプ","p":"læmp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"coin","m":"コイン・金貨(きんか)","k":"コイン","p":"kɔɪn","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"scone","m":"スコーン","k":"スコウン","p":"skoʊn","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"light","m":"光(ひかり)・明(あ)かり","k":"ライト","p":"laɪt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"door","m":"とびら・ドア","k":"ドア","p":"dɔːr","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"room","m":"部屋(へや)","k":"ルーム","p":"ruːm","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"tonight","m":"今夜(こんや)","k":"トゥナイト","p":"təˈnaɪt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"eye","m":"目(め)","k":"アイ","p":"aɪ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":4},{"w":"morning","m":"朝(あさ)","k":"モーニング","p":"ˈmɔːrnɪŋ","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"noon","m":"正午(しょうご)・お昼(ひる)","k":"ヌーン","p":"nuːn","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"afternoon","m":"午後(ごご)","k":"アフタヌーン","p":"ˌæftərˈnuːn","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"evening","m":"夕方(ゆうがた)","k":"イーブニング","p":"ˈiːvnɪŋ","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"night","m":"夜(よる)","k":"ナイト","p":"naɪt","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"o'clock","m":"〜時(じ)ちょうど","k":"オクロック","p":"əˈklɑːk","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"a.m.","m":"午前(ごぜん)","k":"エイエム","p":"ˌeɪˈɛm","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"p.m.","m":"午後(ごご)（時刻(じこく)）","k":"ピーエム","p":"ˌpiːˈɛm","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"today","m":"今日(きょう)","k":"トゥデイ","p":"təˈdeɪ","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"tomorrow","m":"明日(あした)","k":"トゥモロウ","p":"təˈmɑːroʊ","c":"🕘 時間(じかん)のことば（What time ~?）","s":4},{"w":"look","m":"見(み)る","k":"ルック","p":"lʊk","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"listen","m":"聞(き)く","k":"リッスン","p":"ˈlɪsən","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"open","m":"開(あ)ける","k":"オウプン","p":"ˈoʊpən","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"close","m":"閉(し)める","k":"クロウズ","p":"kloʊz","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"hold","m":"持(も)つ・かかげる","k":"ホウルド","p":"hoʊld","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"touch","m":"さわる","k":"タッチ","p":"tʌtʃ","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"stop","m":"止(と)まる・やめる","k":"ストップ","p":"stɑːp","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"wait","m":"待(ま)つ","k":"ウェイト","p":"weɪt","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"meet","m":"会(あ)う","k":"ミート","p":"miːt","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"follow","m":"ついていく","k":"フォロウ","p":"ˈfɑːloʊ","c":"👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)","s":4},{"w":"in","m":"〜の中(なか)に","k":"イン","p":"ɪn","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"on","m":"〜の上(うえ)に","k":"オン","p":"ɑːn","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"under","m":"〜の下(した)に","k":"アンダー","p":"ˈʌndər","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"behind","m":"〜のうしろに","k":"ビハインド","p":"bɪˈhaɪnd","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"near","m":"〜の近(ちか)くに","k":"ニア","p":"nɪr","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"by","m":"〜のそばに","k":"バイ","p":"baɪ","c":"📍 位置(いち)のことば（Look under the desk!）","s":4},{"w":"forest","m":"森(もり)","k":"フォレスト","p":"ˈfɔːrɪst","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"rock","m":"岩(いわ)","k":"ロック","p":"rɑːk","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"tree","m":"木(き)","k":"トゥリー","p":"triː","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"seed","m":"たね","k":"シード","p":"siːd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"wood","m":"木材(もくざい)・まき","k":"ウッド","p":"wʊd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"worried","m":"心配(しんぱい)している","k":"ワリード","p":"ˈwɜːrid","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"deep","m":"奥(おく)ふかい","k":"ディープ","p":"diːp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"report","m":"ほうこくする","k":"リポート","p":"rɪˈpɔːrt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":5},{"w":"get up","m":"起(お)きる","k":"ゲット アップ","p":"ɡɛt ʌp","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"go to school","m":"学校(がっこう)に行(い)く","k":"ゴウ トゥ スクール","p":"ɡoʊ tə skuːl","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"study","m":"勉強(べんきょう)する","k":"スタディ","p":"ˈstʌdi","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"watch TV","m":"テレビを見(み)る","k":"ウォッチ ティーヴィー","p":"wɑːtʃ ˌtiːˈviː","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"read","m":"読(よ)む","k":"リード","p":"riːd","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"sleep","m":"ねむる","k":"スリープ","p":"sliːp","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"walk","m":"歩(ある)く","k":"ウォーク","p":"wɔːk","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"work","m":"働(はたら)く","k":"ワーク","p":"wɜːrk","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"clean","m":"そうじする","k":"クリーン","p":"kliːn","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"water","m":"水(みず)をやる","k":"ウォーター","p":"ˈwɔːtər","c":"🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）","s":5},{"w":"every day","m":"毎日(まいにち)","k":"エブリ デイ","p":"ˈɛvri deɪ","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"every morning","m":"毎朝(まいあさ)","k":"エブリ モーニング","p":"ˈɛvri ˈmɔːrnɪŋ","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"every night","m":"毎晩(まいばん)","k":"エブリ ナイト","p":"ˈɛvri naɪt","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"always","m":"いつも","k":"オールウェイズ","p":"ˈɔːlweɪz","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"usually","m":"たいてい","k":"ユージュアリー","p":"ˈjuːʒuəli","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"sometimes","m":"ときどき","k":"サムタイムズ","p":"ˈsʌmtaɪmz","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"never","m":"けっして〜ない","k":"ネバー","p":"ˈnɛvər","c":"⏰ ひんど・くりかえしのことば","s":5},{"w":"kitchen","m":"キッチン・台所(だいどころ)","k":"キッチン","p":"ˈkɪtʃɪn","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"bed","m":"ベッド","k":"ベッド","p":"bɛd","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"desk","m":"つくえ","k":"デスク","p":"dɛsk","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"chair","m":"いす","k":"チェア","p":"tʃɛr","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"window","m":"窓(まど)","k":"ウィンドウ","p":"ˈwɪndoʊ","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"house","m":"家(いえ)","k":"ハウス","p":"haʊs","c":"🏠 家(いえ)の中(なか)（He sleeps in his bed.）","s":5},{"w":"axe","m":"おの","k":"アックス","p":"æks","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"bag","m":"かばん","k":"バッグ","p":"bæɡ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"turnip","m":"カブ","k":"ターニップ","p":"ˈtɜːrnɪp","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"box","m":"箱(はこ)","k":"ボックス","p":"bɑːks","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"path","m":"道(みち)","k":"パス","p":"pæθ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"flower","m":"花(はな)","k":"フラワー","p":"ˈflaʊər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"real","m":"本物(ほんもの)の","k":"リアル","p":"ˈriːəl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"safe","m":"安全(あんぜん)な","k":"セイフ","p":"seɪf","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":6},{"w":"pen","m":"ペン","k":"ペン","p":"pɛn","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"pencil","m":"えんぴつ","k":"ペンシル","p":"ˈpɛnsəl","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"notebook","m":"ノート","k":"ノウトブック","p":"ˈnoʊtbʊk","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"book","m":"本(ほん)","k":"ブック","p":"bʊk","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"cap","m":"ぼうし","k":"キャップ","p":"kæp","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"shoe","m":"くつ","k":"シュー","p":"ʃuː","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"watch","m":"うで時計(どけい)","k":"ウォッチ","p":"wɑːtʃ","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"ball","m":"ボール","k":"ボール","p":"bɔːl","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"umbrella","m":"かさ","k":"アンブレラ","p":"ʌmˈbrɛlə","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"card","m":"カード","k":"カード","p":"kɑːrd","c":"🎒 持(も)ち物(もの)（Whose ~ is this?）","s":6},{"w":"mine","m":"わたしのもの","k":"マイン","p":"maɪn","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"yours","m":"あなたのもの","k":"ユアーズ","p":"jʊrz","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"his","m":"彼(かれ)のもの","k":"ヒズ","p":"hɪz","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"hers","m":"彼女(かのじょ)のもの","k":"ハーズ","p":"hɜːrz","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"ours","m":"わたしたちのもの","k":"アワーズ","p":"ˈaʊərz","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"theirs","m":"彼(かれ)らのもの","k":"ゼアーズ","p":"ðɛrz","c":"🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）","s":6},{"w":"house","m":"家(いえ)","k":"ハウス","p":"haʊs","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"shop","m":"お店(みせ)","k":"ショップ","p":"ʃɑːp","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"park","m":"公園(こうえん)","k":"パーク","p":"pɑːrk","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"station","m":"駅(えき)","k":"ステイション","p":"ˈsteɪʃən","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"hospital","m":"病院(びょういん)","k":"ホスピタル","p":"ˈhɑːspɪtəl","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"museum","m":"博物館(はくぶつかん)","k":"ミュージアム","p":"mjuˈziːəm","c":"🏙 町(まち)のたてもの（Whose house is this?）","s":6},{"w":"bridge","m":"橋(はし)","k":"ブリッジ","p":"brɪdʒ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"mountain","m":"山(やま)","k":"マウンテン","p":"ˈmaʊntən","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"inn","m":"宿屋(やどや)","k":"イン","p":"ɪn","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"guard","m":"守(まも)る","k":"ガード","p":"ɡɑːrd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"angry","m":"怒(おこ)っている","k":"アングリー","p":"ˈæŋɡri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"important","m":"大事(だいじ)な","k":"インポータント","p":"ɪmˈpɔːrtənt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"circle","m":"円(えん)・ぐるぐる","k":"サークル","p":"ˈsɜːrkəl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"pass","m":"通(とお)る","k":"パス","p":"pæs","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":7},{"w":"play → playing","m":"そのまま ing","k":"プレイ → プレイング","p":"pleɪ → ˈpleɪɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"eat → eating","m":"そのまま ing","k":"イート → イーティング","p":"iːt → ˈiːtɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"sleep → sleeping","m":"そのまま ing","k":"スリープ → スリーピング","p":"sliːp → ˈsliːpɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"fly → flying","m":"そのまま ing","k":"フライ → フライング","p":"flaɪ → ˈflaɪɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"make → making","m":"e を取(と)って ing","k":"メイク → メイキング","p":"meɪk → ˈmeɪkɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"write → writing","m":"e を取(と)って ing","k":"ライト → ライティング","p":"raɪt → ˈraɪtɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"run → running","m":"n を重(かさ)ねて ing","k":"ラン → ランニング","p":"rʌn → ˈrʌnɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"swim → swimming","m":"m を重(かさ)ねて ing","k":"スウィム → スウィミング","p":"swɪm → ˈswɪmɪŋ","c":"🔄 動詞(どうし)の ing 変身表(へんしんひょう)","s":7},{"w":"now","m":"今(いま)","k":"ナウ","p":"naʊ","c":"⚡ 「今(いま)」を表(あらわ)すことば","s":7},{"w":"right now","m":"今(いま)まさに","k":"ライト ナウ","p":"raɪt naʊ","c":"⚡ 「今(いま)」を表(あらわ)すことば","s":7},{"w":"Look!","m":"見(み)て！","k":"ルック","p":"lʊk","c":"⚡ 「今(いま)」を表(あらわ)すことば","s":7},{"w":"Listen!","m":"聞(き)いて！","k":"リッスン","p":"ˈlɪsən","c":"⚡ 「今(いま)」を表(あらわ)すことば","s":7},{"w":"read → reading","m":"そのまま ing","k":"リード → リーディング","p":"riːd → ˈriːdɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"sing → singing","m":"そのまま ing","k":"シング → シンギング","p":"sɪŋ → ˈsɪŋɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"walk → walking","m":"そのまま ing","k":"ウォーク → ウォーキング","p":"wɔːk → ˈwɔːkɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"study → studying","m":"そのまま ing","k":"スタディ → スタディイング","p":"ˈstʌdi → ˈstʌdiɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"dance → dancing","m":"e を取(と)って ing","k":"ダンス → ダンシング","p":"dæns → ˈdænsɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"come → coming","m":"e を取(と)って ing","k":"カム → カミング","p":"kʌm → ˈkʌmɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"sit → sitting","m":"t を重(かさ)ねて ing","k":"シット → シッティング","p":"sɪt → ˈsɪtɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"get → getting","m":"t を重(かさ)ねて ing","k":"ゲット → ゲッティング","p":"ɡɛt → ˈɡɛtɪŋ","c":"🔄 変身表(へんしんひょう)・その2","s":7},{"w":"steak","m":"ステーキ","k":"ステイク","p":"steɪk","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"sunrise","m":"日(ひ)の出(で)","k":"サンライズ","p":"ˈsʌnraɪz","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"training","m":"訓練(くんれん)","k":"トレイニング","p":"ˈtreɪnɪŋ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"heart","m":"心(こころ)","k":"ハート","p":"hɑːrt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"answer","m":"答(こた)え","k":"アンサー","p":"ˈænsər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"brave","m":"勇敢(ゆうかん)な","k":"ブレイブ","p":"breɪv","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"lonely","m":"さみしい","k":"ロウンリー","p":"ˈloʊnli","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"smile","m":"笑顔(えがお)・ほほえむ","k":"スマイル","p":"smaɪl","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":8},{"w":"happy","m":"うれしい","k":"ハッピー","p":"ˈhæpi","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"sad","m":"悲(かな)しい","k":"サッド","p":"sæd","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"tired","m":"つかれた","k":"タイアード","p":"ˈtaɪərd","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"hungry","m":"おなかがすいた","k":"ハングリー","p":"ˈhʌŋɡri","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"sleepy","m":"ねむい","k":"スリーピー","p":"ˈsliːpi","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"cold","m":"寒(さむ)い・冷(つめ)たい","k":"コウルド","p":"koʊld","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"hot","m":"暑(あつ)い","k":"ホット","p":"hɑːt","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"fine","m":"元気(げんき)な","k":"ファイン","p":"faɪn","c":"😊 気持(きも)ち・様子(ようす)（look + ~）","s":8},{"w":"go","m":"行(い)く","k":"ゴウ","p":"ɡoʊ","c":"💭 したいこと（want to + ~）","s":8},{"w":"see","m":"見(み)る・会(あ)う","k":"シー","p":"siː","c":"💭 したいこと（want to + ~）","s":8},{"w":"eat","m":"食(た)べる","k":"イート","p":"iːt","c":"💭 したいこと（want to + ~）","s":8},{"w":"help","m":"助(たす)ける","k":"ヘルプ","p":"hɛlp","c":"💭 したいこと（want to + ~）","s":8},{"w":"be","m":"〜になる","k":"ビー","p":"biː","c":"💭 したいこと（want to + ~）","s":8},{"w":"travel","m":"旅(たび)する","k":"トラベル","p":"ˈtrævəl","c":"💭 したいこと（want to + ~）","s":8},{"w":"win","m":"勝(か)つ","k":"ウィン","p":"wɪn","c":"💭 したいこと（want to + ~）","s":8},{"w":"save","m":"救(すく)う","k":"セイブ","p":"seɪv","c":"💭 したいこと（want to + ~）","s":8},{"w":"dancing","m":"おどること","k":"ダンシング","p":"ˈdænsɪŋ","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"singing","m":"歌(うた)うこと","k":"シンギング","p":"ˈsɪŋɪŋ","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"cooking","m":"料理(りょうり)すること","k":"クッキング","p":"ˈkʊkɪŋ","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"reading","m":"読書(どくしょ)","k":"リーディング","p":"ˈriːdɪŋ","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"drawing","m":"絵(え)をかくこと","k":"ドローイング","p":"ˈdrɔːɪŋ","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"playing games","m":"ゲームをすること","k":"プレイング ゲイムズ","p":"ˈpleɪɪŋ ɡeɪmz","c":"🎨 〜するのが好(す)き（like ~ing）","s":8},{"w":"sea","m":"海(うみ)","k":"シー","p":"siː","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"river","m":"川(かわ)","k":"リバー","p":"ˈrɪvər","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"lake","m":"湖(みずうみ)","k":"レイク","p":"leɪk","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"sun","m":"太陽(たいよう)","k":"サン","p":"sʌn","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"nature","m":"自然(しぜん)","k":"ネイチャー","p":"ˈneɪtʃər","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"snow festival","m":"雪(ゆき)まつり","k":"スノウ フェスティバル","p":"snoʊ ˈfɛstɪvəl","c":"🌊 見(み)たいもの・自然(しぜん)（I want to see ~）","s":8},{"w":"voice","m":"声(こえ)","k":"ボイス","p":"vɔɪs","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"story","m":"物語(ものがたり)","k":"ストーリー","p":"ˈstɔːri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"sky","m":"空(そら)","k":"スカイ","p":"skaɪ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"island","m":"島(しま)","k":"アイランド","p":"ˈaɪlənd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"legendary","m":"伝説(でんせつ)の","k":"レジェンダリー","p":"ˈlɛdʒəndɛri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"music","m":"音楽(おんがく)","k":"ミュージック","p":"ˈmjuːzɪk","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"question","m":"質問(しつもん)","k":"クエスチョン","p":"ˈkwɛstʃən","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"cheer","m":"かんせい・応援(おうえん)","k":"チア","p":"tʃɪr","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":9},{"w":"go → went","m":"行(い)く→行(い)った","k":"ゴウ → ウェント","p":"ɡoʊ → wɛnt","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"eat → ate","m":"食(た)べる→食(た)べた","k":"イート → エイト","p":"iːt → eɪt","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"see → saw","m":"見(み)る→見(み)た","k":"シー → ソー","p":"siː → sɔː","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"say → said","m":"言(い)う→言(い)った","k":"セイ → セッド","p":"seɪ → sɛd","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"give → gave","m":"あげる→あげた","k":"ギブ → ゲイブ","p":"ɡɪv → ɡeɪv","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"make → made","m":"作(つく)る→作(つく)った","k":"メイク → メイド","p":"meɪk → meɪd","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"find → found","m":"見(み)つける→見(み)つけた","k":"ファインド → ファウンド","p":"faɪnd → faʊnd","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"hear → heard","m":"聞(き)く→聞(き)いた","k":"ヒア → ハード","p":"hɪr → hɜːrd","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"meet → met","m":"会(あ)う→会(あ)った","k":"ミート → メット","p":"miːt → mɛt","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"have → had","m":"持(も)つ→持(も)っていた","k":"ハブ → ハッド","p":"hæv → hæd","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"get → got","m":"手(て)に入(い)れる→入(い)れた","k":"ゲット → ガット","p":"ɡɛt → ɡɑːt","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"come → came","m":"来(く)る→来(き)た","k":"カム → ケイム","p":"kʌm → keɪm","c":"🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)","s":9},{"w":"play → played","m":"した","k":"プレイ → プレイド","p":"pleɪ → pleɪd","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"help → helped","m":"助(たす)けた","k":"ヘルプ → ヘルプト","p":"hɛlp → hɛlpt","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"call → called","m":"呼(よ)んだ","k":"コール → コールド","p":"kɔːl → kɔːld","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"visit → visited","m":"訪(おとず)れた","k":"ビジット → ビジテッド","p":"ˈvɪzɪt → ˈvɪzɪtɪd","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"enjoy → enjoyed","m":"楽(たの)しんだ","k":"エンジョイ → エンジョイド","p":"ɪnˈdʒɔɪ → ɪnˈdʒɔɪd","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"study → studied","m":"勉強(べんきょう)した","k":"スタディ → スタディード","p":"ˈstʌdi → ˈstʌdid","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"stop → stopped","m":"止(と)めた","k":"ストップ → ストップト","p":"stɑːp → stɑːpt","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"like → liked","m":"好(す)きだった","k":"ライク → ライクト","p":"laɪk → laɪkt","c":"➕ 規則動詞(きそくどうし)（+ ed）","s":9},{"w":"yesterday","m":"きのう","k":"イエスタデイ","p":"ˈjɛstərdeɪ","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"last night","m":"昨夜(さくや)","k":"ラスト ナイト","p":"læst naɪt","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"last week","m":"先週(せんしゅう)","k":"ラスト ウィーク","p":"læst wiːk","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"last year","m":"去年(きょねん)","k":"ラスト イヤー","p":"læst jɪr","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"then","m":"そのとき","k":"ゼン","p":"ðɛn","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"~ ago","m":"〜前(まえ)に","k":"〜 アゴウ","p":"əˈɡoʊ","c":"📅 過去(かこ)の時(とき)ことば","s":9},{"w":"buy → bought","m":"買(か)う→買(か)った","k":"バイ → ボート","p":"baɪ → bɔːt","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"take → took","m":"取(と)る→取(と)った","k":"テイク → トゥック","p":"teɪk → tʊk","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"write → wrote","m":"書(か)く→書(か)いた","k":"ライト → ロウト","p":"raɪt → roʊt","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"win → won","m":"勝(か)つ→勝(か)った","k":"ウィン → ワン","p":"wɪn → wʌn","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"think → thought","m":"思(おも)う→思(おも)った","k":"シンク → ソート","p":"θɪŋk → θɔːt","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"run → ran","m":"走(はし)る→走(はし)った","k":"ラン → ラン","p":"rʌn → ræn","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"sit → sat","m":"すわる→すわった","k":"シット → サット","p":"sɪt → sæt","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"drink → drank","m":"飲(の)む→飲(の)んだ","k":"ドリンク → ドランク","p":"drɪŋk → dræŋk","c":"🔮 不規則動詞(ふきそくどうし)・その2","s":9},{"w":"ice","m":"氷(こおり)","k":"アイス","p":"aɪs","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"snow","m":"雪(ゆき)","k":"スノウ","p":"snoʊ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"wind","m":"風(かぜ)","k":"ウィンド","p":"wɪnd","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"test","m":"試練(しれん)・テスト","k":"テスト","p":"tɛst","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"memory","m":"思(おも)い出(で)","k":"メモリー","p":"ˈmɛməri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"moment","m":"しゅんかん","k":"モウメント","p":"ˈmoʊmənt","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"truth","m":"本当(ほんとう)のこと","k":"トゥルース","p":"truːθ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"ordinary","m":"ふつうの","k":"オーディナリー","p":"ˈɔːrdənɛri","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":10},{"w":"great","m":"すばらしい","k":"グレイト","p":"ɡreɪt","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"fun","m":"楽(たの)しい","k":"ファン","p":"fʌn","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"exciting","m":"ワクワクする","k":"イクサイティング","p":"ɪkˈsaɪtɪŋ","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"wonderful","m":"最高(さいこう)の","k":"ワンダフル","p":"ˈwʌndərfəl","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"delicious","m":"おいしい","k":"デリシャス","p":"dɪˈlɪʃəs","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"interesting","m":"おもしろい","k":"インタレスティング","p":"ˈɪntrəstɪŋ","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"hard","m":"大変(たいへん)な","k":"ハード","p":"hɑːrd","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"long","m":"長(なが)い","k":"ロング","p":"lɔːŋ","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"beautiful","m":"美(うつく)しい","k":"ビューティフル","p":"ˈbjuːtɪfəl","c":"🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）","s":10},{"w":"winter","m":"冬(ふゆ)","k":"ウィンター","p":"ˈwɪntər","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"vacation","m":"休(やす)み","k":"ベイケイション","p":"veɪˈkeɪʃən","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"trip","m":"旅行(りょこう)","k":"トリップ","p":"trɪp","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"weekend","m":"週末(しゅうまつ)","k":"ウィーケンド","p":"ˈwiːkɛnd","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"season","m":"季節(きせつ)","k":"シーズン","p":"ˈsiːzən","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"weather","m":"天気(てんき)","k":"ウェザー","p":"ˈwɛðər","c":"❄️ 冬(ふゆ)と旅(たび)のことば","s":10},{"w":"I was ~","m":"わたしは〜だった","k":"アイ ワズ 〜","p":"aɪ wʌz","c":"🕰 was / were の選(えら)び方(かた)","s":10},{"w":"He / She / It was ~","m":"彼(かれ)・彼女(かのじょ)・それは〜だった","k":"ヒー シー イット ワズ 〜","p":"hiː ʃiː ɪt wʌz","c":"🕰 was / were の選(えら)び方(かた)","s":10},{"w":"You were ~","m":"あなたは〜だった","k":"ユー ワー 〜","p":"juː wɜːr","c":"🕰 was / were の選(えら)び方(かた)","s":10},{"w":"We / They were ~","m":"わたしたち・彼(かれ)らは〜だった","k":"ウィー ゼイ ワー 〜","p":"wiː ðeɪ wɜːr","c":"🕰 was / were の選(えら)び方(かた)","s":10},{"w":"school trip","m":"修学旅行(しゅうがくりょこう)・遠足(えんそく)","k":"スクール トリップ","p":"skuːl trɪp","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"festival","m":"おまつり","k":"フェスティバル","p":"ˈfɛstɪvəl","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"concert","m":"コンサート","k":"コンサート","p":"ˈkɑːnsərt","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"contest","m":"コンテスト","k":"コンテスト","p":"ˈkɑːntɛst","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"event","m":"行事(ぎょうじ)・イベント","k":"イベント","p":"ɪˈvɛnt","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"performance","m":"発表(はっぴょう)","k":"パフォーマンス","p":"pərˈfɔːrməns","c":"🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）","s":10},{"w":"star","m":"星(ほし)","k":"スター","p":"stɑːr","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"everyone","m":"みんな","k":"エブリワン","p":"ˈɛvriwʌn","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"courage","m":"勇気(ゆうき)","k":"カレッジ","p":"ˈkɜːrɪdʒ","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"kindness","m":"やさしさ","k":"カインドネス","p":"ˈkaɪndnəs","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"proof","m":"証(あかし)","k":"プルーフ","p":"pruːf","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"power","m":"力(ちから)","k":"パワー","p":"ˈpaʊər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"adventure","m":"冒険(ぼうけん)","k":"アドベンチャー","p":"ədˈvɛntʃər","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"party","m":"パーティー","k":"パーティー","p":"ˈpɑːrti","c":"📖 ストーリーの新出単語(しんしゅつたんご)","s":11},{"w":"world","m":"世界(せかい)","k":"ワールド","p":"wɜːrld","c":"🌍 世界(せかい)のことば","s":11},{"w":"country","m":"国(くに)","k":"カントリー","p":"ˈkʌntri","c":"🌍 世界(せかい)のことば","s":11},{"w":"Japan","m":"日本(にほん)","k":"ジャパン","p":"dʒəˈpæn","c":"🌍 世界(せかい)のことば","s":11},{"w":"home","m":"家(いえ)・ふるさと","k":"ホウム","p":"hoʊm","c":"🌍 世界(せかい)のことば","s":11},{"w":"school","m":"学校(がっこう)","k":"スクール","p":"skuːl","c":"🌍 世界(せかい)のことば","s":11},{"w":"town","m":"町(まち)","k":"タウン","p":"taʊn","c":"🌍 世界(せかい)のことば","s":11},{"w":"sea","m":"海(うみ)","k":"シー","p":"siː","c":"🌍 世界(せかい)のことば","s":11},{"w":"place","m":"場所(ばしょ)","k":"プレイス","p":"pleɪs","c":"🌍 世界(せかい)のことば","s":11},{"w":"love","m":"大好(だいす)き","k":"ラブ","p":"lʌv","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"thank","m":"感謝(かんしゃ)する","k":"サンク","p":"θæŋk","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"remember","m":"おぼえている","k":"リメンバー","p":"rɪˈmɛmbər","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"forget","m":"わすれる","k":"フォゲット","p":"fərˈɡɛt","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"believe","m":"信(しん)じる","k":"ビリーブ","p":"bɪˈliːv","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"dream","m":"夢(ゆめ)","k":"ドリーム","p":"driːm","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"wish","m":"ねがい","k":"ウィッシュ","p":"wɪʃ","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"together","m":"いっしょに","k":"トゥゲザー","p":"təˈɡɛðər","c":"💖 気持(きも)ちを伝(つた)えることば","s":11},{"w":"and","m":"そして・〜と","k":"アンド","p":"ənd","c":"🔗 文(ぶん)をつなぐことば","s":11},{"w":"but","m":"でも","k":"バット","p":"bʌt","c":"🔗 文(ぶん)をつなぐことば","s":11},{"w":"or","m":"または","k":"オア","p":"ɔːr","c":"🔗 文(ぶん)をつなぐことば","s":11},{"w":"so","m":"だから","k":"ソウ","p":"soʊ","c":"🔗 文(ぶん)をつなぐことば","s":11},{"w":"too","m":"〜も","k":"トゥー","p":"tuː","c":"🔗 文(ぶん)をつなぐことば","s":11}];
+const SQ_SPELLS=[{"en":"Nice to meet you.","jp":"はじめまして。","a":["nice to meet you"],"s":0},{"en":"I'm fine, thank you.","jp":"元気(げんき)です、ありがとう。","a":["i am fine thank you"],"s":0},{"en":"My name is Lumi.","jp":"わたしの名前(なまえ)はルミです。","a":["my name is lumi"],"s":0},{"en":"How are you?","jp":"元気(げんき)ですか？","a":["how are you"],"s":0},{"en":"Good morning, Lumi!","jp":"おはよう、ルミ！","a":["good morning lumi","good morning"],"s":0},{"en":"What's your name?","jp":"あなたの名前(なまえ)は？","a":["what is your name"],"s":0},{"en":"I'm ready!","jp":"準備(じゅんび)オッケー！","a":["i am ready"],"s":0},{"en":"Thank you very much.","jp":"どうも ありがとうございます。","a":["thank you very much"],"s":0},{"en":"You're welcome.","jp":"どういたしまして。","a":["you are welcome"],"s":0},{"en":"See you later!","jp":"またあとでね！","a":["see you later","see you"],"s":0},{"en":"I'm sorry.","jp":"ごめんなさい。","a":["i am sorry"],"s":0},{"en":"That's OK.","jp":"だいじょうぶだよ。","a":["that is ok","that is okay"],"s":0},{"en":"Please help me!","jp":"たすけてください！","a":["please help me","help me"],"s":0},{"en":"I am eleven years old.","jp":"わたしは11さいです。","a":["i am eleven years old","i am eleven","i am twelve years old","i am twelve","i am ten years old","i am ten"],"s":0},{"en":"I am a hero from Japan.","jp":"わたしは日本(にほん)から来(き)たヒーローです。","a":["i am a hero from japan","i am a hero"],"s":1},{"en":"I like volleyball.","jp":"わたしはバレーボールが好(す)きです。","a":["i like volleyball"],"s":1},{"en":"I can run fast.","jp":"わたしは速(はや)く走(はし)れます。","a":["i can run fast"],"s":1},{"en":"I can't fly.","jp":"わたしは飛(と)べません。","a":["i can not fly"],"s":1},{"en":"Are you ready?","jp":"準備(じゅんび)はいい？","a":["are you ready"],"s":1},{"en":"Yes, I am!","jp":"はい、そうです！","a":["yes i am"],"s":1},{"en":"You are a hero, too.","jp":"きみもヒーローだよ。","a":["you are a hero too"],"s":1},{"en":"I play soccer every day.","jp":"わたしは毎日(まいにち)サッカーをします。","a":["i play soccer every day"],"s":1},{"en":"Can you jump?","jp":"ジャンプできる？","a":["can you jump"],"s":1},{"en":"Yes, I can!","jp":"うん、できるよ！","a":["yes i can"],"s":1},{"en":"No, I can't.","jp":"ううん、できないよ。","a":["no i can not"],"s":1},{"en":"I am not scared.","jp":"わたしは こわくないよ。","a":["i am not scared"],"s":1},{"en":"We are heroes.","jp":"わたしたちはヒーローです。","a":["we are heroes"],"s":1},{"en":"This is Mimic.","jp":"これはミミックです。","a":["this is mimic"],"s":2},{"en":"He is the guardian of the Castle Area.","jp":"彼(かれ)はお城(しろ)エリアの守護者(しゅごしゃ)です。","a":["he is the guardian of the castle area"],"s":2},{"en":"She is proud and strong.","jp":"彼女(かのじょ)は誇(ほこ)り高(たか)くて、強(つよ)い。","a":["she is proud and strong"],"s":2},{"en":"He is very big and very kind.","jp":"彼(かれ)はとっても大(おお)きくて、とってもやさしい。","a":["he is very big and very kind"],"s":2},{"en":"What is that light?","jp":"あの光(ひかり)は何(なに)？","a":["what is that light","what is that"],"s":2},{"en":"Is she scary?","jp":"彼女(かのじょ)はこわいの？","a":["is she scary"],"s":2},{"en":"No, she isn't.","jp":"ううん、こわくないよ。","a":["no she is not"],"s":2},{"en":"That is General Winter.","jp":"あれは冬将軍(ふゆしょうぐん)です。","a":["that is general winter"],"s":2},{"en":"He is quiet and cool.","jp":"彼(かれ)は静(しず)かで、クール。","a":["he is quiet and cool"],"s":2},{"en":"It is a map.","jp":"それは地図(ちず)です。","a":["it is a map"],"s":2},{"en":"She is Lumi.","jp":"彼女(かのじょ)はルミです。","a":["she is lumi"],"s":2},{"en":"This is my wand.","jp":"これはわたしの杖(つえ)です。","a":["this is my wand"],"s":2},{"en":"He is my friend.","jp":"彼(かれ)はわたしの友達(ともだち)です。","a":["he is my friend"],"s":2},{"en":"Do you like bread?","jp":"パンは好(す)きですか？","a":["do you like bread"],"s":3},{"en":"Yes, I do!","jp":"はい、好(す)きです！","a":["yes i do"],"s":3},{"en":"No, I don't.","jp":"いいえ、好(す)きじゃないです。","a":["no i do not"],"s":3},{"en":"I like pink, too.","jp":"わたしもピンクが好(す)きです。","a":["i like pink too"],"s":3},{"en":"What color do you like?","jp":"何色(なにいろ)が好(す)きですか？","a":["what color do you like"],"s":3},{"en":"What food do you like?","jp":"何(なん)の食(た)べ物(もの)が好(す)きですか？","a":["what food do you like"],"s":3},{"en":"I like hamburger steak.","jp":"ハンバーグが好(す)きです。","a":["i like hamburger steak"],"s":3},{"en":"Can you make them?","jp":"それ、作(つく)れますか？","a":["can you make them"],"s":3},{"en":"How many gates does the castle have?","jp":"お城(しろ)には門(もん)がいくつありますか？","a":["how many gates does the castle have"],"s":3},{"en":"How many friends do you have?","jp":"友達(ともだち)は何人(なんにん)いますか？","a":["how many friends do you have"],"s":3},{"en":"I have many friends.","jp":"友達(ともだち)がたくさんいます。","a":["i have many friends"],"s":3},{"en":"I have a few friends.","jp":"友達(ともだち)は少(すこ)しいます。","a":["i have a few friends"],"s":3},{"en":"Do you like reading?","jp":"読書(どくしょ)は好(す)きですか？","a":["do you like reading"],"s":3},{"en":"I like comic books.","jp":"マンガが好(す)きです。","a":["i like comic books","i like comics"],"s":3},{"en":"Where is the castle?","jp":"お城(しろ)はどこですか？","a":["where is the castle"],"s":3},{"en":"Turn left at the library.","jp":"図書館(としょかん)で左(ひだり)に曲(ま)がって。","a":["turn left at the library"],"s":3},{"en":"You can see it on your right.","jp":"右手(みぎて)に見(み)えますよ。","a":["you can see it on your right"],"s":3},{"en":"Hold the lamp high!","jp":"ランプを高(たか)くかかげて！","a":["hold the lamp high"],"s":4},{"en":"Don't be late!","jp":"おくれないでね！","a":["do not be late"],"s":4},{"en":"Let's meet at the door.","jp":"とびらの前(まえ)で会(あ)おう。","a":["let us meet at the door"],"s":4},{"en":"What time do we start?","jp":"何時(なんじ)にはじめる？","a":["what time do we start"],"s":4},{"en":"We start at 9 p.m.","jp":"夜(よる)9時(じ)スタートだよ。","a":["we start at 9 p.m.","we start at 9 pm","we start at nine pm","we start at nine p.m."],"s":4},{"en":"Don't touch the crack!","jp":"ひびにさわらないで！","a":["do not touch the crack"],"s":4},{"en":"Stay behind me.","jp":"わたしのうしろにいて。","a":["stay behind me"],"s":4},{"en":"Give it to me!","jp":"それをよこせ！（ミミックのさけび！）","a":["give it to me"],"s":4},{"en":"Let's seal the crack!","jp":"ひびを封印(ふういん)しよう！","a":["let us seal the crack"],"s":4},{"en":"Open the door, please.","jp":"とびらを開(あ)けてください。","a":["open the door please"],"s":4},{"en":"What time is it?","jp":"いま何時(なんじ)？","a":["what time is it"],"s":4},{"en":"It is nine o'clock.","jp":"9時(じ)です。","a":["it is nine o'clock","it is nine oclock","it is 9 o'clock","it is 9 oclock"],"s":4},{"en":"Follow me, heroes!","jp":"ついてきて、ヒーローたち！","a":["follow me heroes","follow me"],"s":4},{"en":"We'd like pumpkin scones, please.","jp":"かぼちゃスコーンをください。","a":["we would like pumpkin scones please","we would like pumpkin scones"],"s":4},{"en":"How many would you like?","jp":"いくつ、ほしいですか？","a":["how many would you like"],"s":4},{"en":"Here you are!","jp":"はい、どうぞ！","a":["here you are","here you go"],"s":4},{"en":"She helps the fairy.","jp":"彼女(かのじょ)は妖精(ようせい)を助(たす)けます。","a":["she helps the fairy"],"s":5},{"en":"He doesn't sleep.","jp":"彼(かれ)はねむりません。","a":["he does not sleep"],"s":5},{"en":"Does Golem sleep?","jp":"ゴーレムはねむりますか？","a":["does golem sleep"],"s":5},{"en":"Yes, he does.","jp":"はい、ねむります。","a":["yes he does"],"s":5},{"en":"No, he doesn't.","jp":"いいえ、ちがいます。","a":["no he does not"],"s":5},{"en":"He throws rocks at trees.","jp":"彼(かれ)は木(き)に岩(いわ)を投(な)げます。","a":["he throws rocks at trees"],"s":5},{"en":"She flies all around.","jp":"彼女(かのじょ)はあちこち飛(と)びまわります。","a":["she flies all around"],"s":5},{"en":"The Elf knows every tree.","jp":"エルフは森(もり)の木(き)をぜんぶ知(し)っています。","a":["the elf knows every tree"],"s":5},{"en":"She doesn't forget anything.","jp":"彼女(かのじょ)は何(なに)も忘(わす)れません。","a":["she does not forget anything"],"s":5},{"en":"He cuts wood every morning.","jp":"彼(かれ)は毎朝(まいあさ)木(き)を切(き)ります。","a":["he cuts wood every morning"],"s":5},{"en":"Golem waters it every day.","jp":"ゴーレムは毎日(まいにち)それに水(みず)をやります。","a":["golem waters it every day"],"s":5},{"en":"Does she like tea?","jp":"彼女(かのじょ)はお茶(ちゃ)が好(す)きですか？","a":["does she like tea"],"s":5},{"en":"He plays table tennis every evening.","jp":"彼(かれ)は毎晩(まいばん)卓球(たっきゅう)をします。","a":["he plays table tennis every evening"],"s":5},{"en":"Whose axe is this?","jp":"このおのは、だれの？","a":["whose axe is this"],"s":6},{"en":"This is the Woodcutter's axe.","jp":"これは木(き)こりのおのです。","a":["this is the woodcutter's axe","this is the woodcutters axe"],"s":6},{"en":"Whose bag is this?","jp":"このかばんは、だれの？","a":["whose bag is this"],"s":6},{"en":"This is the Fairy's bag.","jp":"これは妖精(ようせい)のかばんです。","a":["this is the fairy's bag","this is the fairys bag"],"s":6},{"en":"It's Wumble's turnip.","jp":"それはワンブルのカブです。","a":["it is wumble's turnip","it is wumbles turnip"],"s":6},{"en":"Give it to him.","jp":"彼(かれ)にわたしてあげて。","a":["give it to him"],"s":6},{"en":"Her light lives inside.","jp":"中(なか)に彼女(かのじょ)の光(ひかり)が入(はい)っています。","a":["her light lives inside"],"s":6},{"en":"Which path is safe?","jp":"どっちの道(みち)が安全(あんぜん)？","a":["which path is safe"],"s":6},{"en":"Which is real, this or that?","jp":"本物(ほんもの)はどっち？これ？あれ？","a":["which is real this or that"],"s":6},{"en":"That turnip is his.","jp":"あのカブは彼(かれ)のです。","a":["that turnip is his"],"s":6},{"en":"He is very sad without it.","jp":"彼(かれ)はそれがなくて、とても悲(かな)しんでいます。","a":["he is very sad without it"],"s":6},{"en":"Whose turnip is this?","jp":"このカブは、だれの？","a":["whose turnip is this"],"s":6},{"en":"Take good care of it.","jp":"それを、だいじにしてね。","a":["take good care of it"],"s":6},{"en":"What are you doing?","jp":"何(なに)をしているの？","a":["what are you doing"],"s":7},{"en":"I am guarding this bridge!","jp":"この橋(はし)を守(まも)ってるんだ！","a":["i am guarding this bridge"],"s":7},{"en":"She is flying in circles.","jp":"彼女(かのじょ)はぐるぐる飛(と)んでいます。","a":["she is flying in circles"],"s":7},{"en":"She isn't sleeping.","jp":"彼女(かのじょ)はねむっていません。","a":["she is not sleeping"],"s":7},{"en":"She isn't eating anything.","jp":"彼女(かのじょ)は何(なに)も食(た)べていません。","a":["she is not eating anything"],"s":7},{"en":"I am asking you now.","jp":"いま、わたしが聞(き)いてるよ。","a":["i am asking you now"],"s":7},{"en":"Are you listening?","jp":"聞(き)いてるのか？！","a":["are you listening"],"s":7},{"en":"What is Golem doing?","jp":"ゴーレムは何(なに)をしていますか？","a":["what is golem doing"],"s":7},{"en":"He is throwing rocks.","jp":"彼(かれ)は岩(いわ)を投(な)げています。","a":["he is throwing rocks"],"s":7},{"en":"The crack is growing!","jp":"ひびが広(ひろ)がっている！","a":["the crack is growing"],"s":7},{"en":"She isn't coming down.","jp":"彼女(かのじょ)は下(お)りてきません。","a":["she is not coming down"],"s":7},{"en":"I am not angry.","jp":"怒(おこ)ってるわけじゃない。","a":["i am not angry"],"s":7},{"en":"We are visiting the mountain.","jp":"わたしたちは山(やま)に行(い)くところです。","a":["we are visiting the mountain"],"s":7},{"en":"We want to help our friend.","jp":"友達(ともだち)を助(たす)けたいです。","a":["we want to help our friend"],"s":8},{"en":"I want to eat steak.","jp":"ステーキが食(た)べたいです。","a":["i want to eat steak"],"s":8},{"en":"I want to go home.","jp":"家(いえ)に帰(かえ)りたいです。","a":["i want to go home"],"s":8},{"en":"What do you want?","jp":"何(なに)がしたい？","a":["what do you want"],"s":8},{"en":"You look tired.","jp":"つかれて見(み)えます。","a":["you look tired"],"s":8},{"en":"You look hungry.","jp":"おなかがすいて見(み)えます。","a":["you look hungry"],"s":8},{"en":"She looks a little lonely.","jp":"彼女(かのじょ)は少(すこ)しさみしそうに見(み)えます。","a":["she looks a little lonely"],"s":8},{"en":"I like eating steak.","jp":"ステーキを食(た)べるのが好(す)きです。","a":["i like eating steak"],"s":8},{"en":"She likes flying.","jp":"彼女(かのじょ)は飛(と)ぶのが好(す)きです。","a":["she likes flying"],"s":8},{"en":"I am good at running.","jp":"走(はし)るのが得意(とくい)です。","a":["i am good at running"],"s":8},{"en":"Do you want to see?","jp":"見(み)たい？","a":["do you want to see"],"s":8},{"en":"That is a very good answer.","jp":"たいへん良(よ)い答(こた)えだ。","a":["that is a very good answer"],"s":8},{"en":"You look brave, little heroes.","jp":"勇敢(ゆうかん)に見(み)えるぞ、小(ちい)さなヒーローたち。","a":["you look brave little heroes","you look brave"],"s":8},{"en":"We helped the fairy.","jp":"わたしたちは妖精(ようせい)を助(たす)けました。","a":["we helped the fairy"],"s":9},{"en":"We heard a voice.","jp":"わたしたちは声(こえ)を聞(き)きました。","a":["we heard a voice"],"s":9},{"en":"Lumi called us.","jp":"ルミがわたしたちを呼(よ)びました。","a":["lumi called us"],"s":9},{"en":"We said yes.","jp":"わたしたちは「はい」と言(い)いました。","a":["we said yes"],"s":9},{"en":"We met the King.","jp":"わたしたちは王様(おうさま)に会(あ)いました。","a":["we met the king"],"s":9},{"en":"The Elf gave us a seed.","jp":"エルフがたねをくれました。","a":["the elf gave us a seed"],"s":9},{"en":"Golem grew a little tree.","jp":"ゴーレムは小(ちい)さな木(き)を育(そだ)てました。","a":["golem grew a little tree"],"s":9},{"en":"We made a legendary steak.","jp":"わたしたちは伝説(でんせつ)のステーキを作(つく)りました。","a":["we made a legendary steak"],"s":9},{"en":"Dragon ate it in one bite.","jp":"ドラゴンはひと口(くち)で食(た)べました。","a":["dragon ate it in one bite"],"s":9},{"en":"I found the golden key.","jp":"わたしは金(きん)のカギを見(み)つけました。","a":["i found the golden key"],"s":9},{"en":"Did you defeat Mimic?","jp":"ミミックを倒(たお)しましたか？","a":["did you defeat mimic"],"s":9},{"en":"No, we saved him!","jp":"いいえ、助(たす)けました！","a":["no we saved him"],"s":9},{"en":"We held the light.","jp":"わたしたちは光(ひかり)をかかげました。","a":["we held the light"],"s":9},{"en":"The mountain was cold.","jp":"山(やま)は寒(さむ)かった。","a":["the mountain was cold"],"s":10},{"en":"It was scary.","jp":"こわかった。","a":["it was scary"],"s":10},{"en":"We were together.","jp":"わたしたちは、いっしょでした。","a":["we were together"],"s":10},{"en":"We weren't alone.","jp":"ひとりじゃなかった。","a":["we were not alone"],"s":10},{"en":"Were you alone?","jp":"ひとりだったか？","a":["were you alone"],"s":10},{"en":"No, we weren't.","jp":"いいえ、ちがいます。","a":["no we were not"],"s":10},{"en":"Was it fun?","jp":"楽(たの)しかった？","a":["was it fun"],"s":10},{"en":"Yes, it was.","jp":"うん、楽(たの)しかった！","a":["yes it was"],"s":10},{"en":"He was quiet.","jp":"彼(かれ)は静(しず)かでした。","a":["he was quiet"],"s":10},{"en":"They were brave.","jp":"彼(かれ)らは勇敢(ゆうかん)でした。","a":["they were brave"],"s":10},{"en":"I was a little scared.","jp":"わたしは少(すこ)しこわかった。","a":["i was a little scared"],"s":10},{"en":"Our days were good days.","jp":"わたしたちの毎日(まいにち)は、いい毎日(まいにち)でした。","a":["our days were good days"],"s":10},{"en":"It was the best adventure.","jp":"最高(さいこう)の冒険(ぼうけん)でした。","a":["it was the best adventure"],"s":10},{"en":"How was the mountain?","jp":"山(やま)はどうだった？","a":["how was the mountain"],"s":10},{"en":"It was wonderful!","jp":"最高(さいこう)でした！","a":["it was wonderful"],"s":10},{"en":"My best memory was the steak.","jp":"いちばんの思(おも)い出(で)はステーキでした。","a":["my best memory was the steak"],"s":10},{"en":"I was scared, but it was fun.","jp":"こわかったけど、楽(たの)しかった。","a":["i was scared but it was fun"],"s":10},{"en":"Did you have fun?","jp":"楽(たの)しかった？","a":["did you have fun"],"s":10},{"en":"Yes, we did!","jp":"うん、楽(たの)しかった！","a":["yes we did"],"s":10},{"en":"We are heroes, and we are not alone.","jp":"ぼくたちはヒーロー——そして、ひとりじゃない。","a":["we are heroes and we are not alone"],"s":11},{"en":"Together, we can do everything.","jp":"いっしょなら、ぜんぶできる。","a":["together we can do everything"],"s":11},{"en":"We love this castle!","jp":"このお城(しろ)が大好(だいす)き！","a":["we love this castle"],"s":11},{"en":"We are the guardians of this world!","jp":"我(われ)らは、この世界(せかい)の守護者(しゅごしゃ)なり！","a":["we are the guardians of this world"],"s":11},{"en":"Thank you for everything.","jp":"ぜんぶ、ありがとう。","a":["thank you for everything"],"s":11},{"en":"Will we see you again?","jp":"また、会(あ)える？","a":["will we see you again"],"s":11},{"en":"The true power of heroes is working together.","jp":"ヒーローの本当(ほんとう)の力(ちから)は、力(ちから)を合(あ)わせること。","a":["the true power of heroes is working together"],"s":11}];
+
+/* ── SFX: tiny Web-Audio tones, no files needed ── */
+let _actx=null,_sfxg=null;
+function _ac(){if(!_actx){try{_actx=new (window.AudioContext||window.webkitAudioContext)();_sfxg=_actx.createGain();_sfxg.gain.value=0.55;_sfxg.connect(_actx.destination);}catch(e){}}if(_actx&&_actx.state==='suspended')_actx.resume();return _actx;}
+document.addEventListener('pointerdown',()=>_ac(),{once:true});
+function sfxTone(f,type,dur,vol,delay,f2){try{const c=_ac();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(_sfxg);o.type=type;const t0=c.currentTime+(delay||0);o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+dur);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.012);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.start(t0);o.stop(t0+dur+.05);}catch(e){}}
+const sfxTap =()=>sfxTone(520,'sine',.05,.16);
+const sfxKey =()=>sfxTone(760,'triangle',.03,.07);
+const sfxGood=()=>{sfxTone(660,'sine',.09,.2);sfxTone(990,'sine',.1,.16,.06);};
+const sfxBad =()=>sfxTone(200,'square',.16,.14,0,130);
+const sfxStar=()=>{[523,659,784,1047].forEach((f,i)=>sfxTone(f,'sine',.16,.2,i*.07));};
+const sfxFlashS=()=>sfxTone(1100,'sine',.35,.14,0,2300);
+const sfxOops=()=>sfxTone(340,'triangle',.12,.13,0,240);
+const sfxMicOn=()=>{sfxTone(620,'sine',.1,.16);sfxTone(930,'sine',.14,.16,.09);};
+/* future ElevenLabs drop-in: put mp3s at voice/... and they auto-play; missing files fall back to TTS */
+function sayOrFile(file,text){try{const a=new Audio(file);a.onerror=()=>say(text);a.play().catch(()=>say(text));}catch(e){say(text);}}
+const NAUGHTY=/\b(f+u+c*k\w*|sh+i+t\w*|bitch\w*|asshole|arse|cunt\w*|dick\w*|pussy|bastard|nigg\w*|slut|whore|sexy?|penis|vagina|boobs?|damn|crap)\b/i;
+function isNaughty(t){t=String(t||'');return NAUGHTY.test(t)||t.indexOf('*')>=0;}
+function anyNaughty(alts){return (alts||[]).some(isNaughty);}
+function blockPopup(){
+  const old=document.querySelector('.voice-pop');if(old)old.remove();
+  const d=document.createElement('div');d.className='voice-pop';
+  d.innerHTML=`<div class="vp-card ng"><div class="vp-icon">✋</div>
+    <p class="vp-label">The magic circle won't take those words!<br>まほうじんは、そのことばを うけとらないよ！</p>
+    <p class="vp-heard">Speak like a hero! / ヒーローの ことばで はなそう！</p>
+    <button class="vp-close">OK! / わかった！</button></div>`;
+  document.body.appendChild(d);
+  const close=()=>{if(d.parentNode)d.remove();};
+  d.addEventListener('click',e=>{if(e.target===d)close();});
+  d.querySelector('.vp-close').addEventListener('click',close);
+}
+function voicePopup(ok,heard,target){
+  const old=document.querySelector('.voice-pop');if(old)old.remove();
+  const d=document.createElement('div');d.className='voice-pop';
+  d.innerHTML=`<div class="vp-card ${ok?'ok':'ng'}">
+    <div class="vp-icon">${ok?'⭕':'△'}</div>
+    <p class="vp-label">${ok?'It reached the magic circle!<br>まほうじんに とどいた！':'The magic circle heard…<br>まほうじんが きいたのは…'}</p>
+    <p class="vp-heard">“${heard}”</p>
+    ${!ok&&target?`<p class="vp-target">Model / おてほん: <b>${target}</b></p>`:''}
+    <button class="vp-close">${ok?'Nice! / やったね！':'Try again! / もういちど！'}</button></div>`;
+  document.body.appendChild(d);
+  const close=()=>{if(d.parentNode)d.remove();};
+  d.addEventListener('click',e=>{if(e.target===d)close();});
+  d.querySelector('.vp-close').addEventListener('click',close);
+  if(ok)setTimeout(close,1700);
+}
+function zapEl(el){el.classList.remove('zap');void el.offsetWidth;el.classList.add('zap');setTimeout(()=>el.classList.remove('zap'),400);}
+function wslug(w){return String(w).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
+function say(text,rate){try{
+  const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate||0.9;
+  const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.indexOf('en')===0);
+  if(vs.length)u.voice=vs.find(v=>/Google US English|Samantha|Zira|Female/i.test(v.name))||vs[0];
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+}catch(e){}}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
+function listenOnce(onResult){
+  const r=new SR();r.lang='en-US';r.interimResults=false;r.maxAlternatives=4;
+  let got=false;
+  r.onresult=e=>{got=true;onResult([].map.call(e.results[0],a=>a.transcript));};
+  r.onerror=()=>{};
+  r.onend=()=>{if(!got)onResult([]);};
+  try{r.start();}catch(e){onResult([]);}
+  return r;
+}
+const CONTR={"i'm":"i am","im":"i am","you're":"you are","youre":"you are","he's":"he is","hes":"he is","she's":"she is","shes":"she is","it's":"it is","its":"it is","that's":"that is","thats":"that is","what's":"what is","whats":"what is","who's":"who is","whos":"who is","we're":"we are","they're":"they are","let's":"let us","lets":"let us","don't":"do not","dont":"do not","doesn't":"does not","doesnt":"does not","isn't":"is not","isnt":"is not","aren't":"are not","arent":"are not","can't":"can not","cant":"can not","cannot":"can not","won't":"will not","wont":"will not","didn't":"did not","didnt":"did not","wasn't":"was not","wasnt":"was not","weren't":"were not","werent":"were not","where's":"where is","wheres":"where is","here's":"here is","heres":"here is","we'd":"we would","wed":"we would","i'd":"i would"};
+const NUMW={"0":"zero","1":"one","2":"two","3":"three","4":"four","5":"five","6":"six","7":"seven","8":"eight","9":"nine","10":"ten","11":"eleven","12":"twelve","20":"twenty","30":"thirty","100":"hundred"};
+function normEn(s){
+  s=String(s||'').toLowerCase().replace(/[\u2019\u2018\u00b4`]/g,"'");
+  s=s.replace(/[^a-z0-9'\s]/g,' ').replace(/\s+/g,' ').trim();
+  return s.split(' ').map(w=>CONTR[w]||NUMW[w]||w).join(' ');
+}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let prev=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const cur=[i];
+    for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    prev=cur;}
+  return prev[n];}
+function typedPass(said,item){const t=normEn(said);return (item.accept||[item.en]).some(a=>normEn(a)===t);}
+function fuzzyPass(alts,item){
+  const targets=(item.accept||[item.en]).map(normEn);
+  for(let k=0;k<alts.length;k++){const s=normEn(alts[k]);if(!s)continue;
+    for(let j=0;j<targets.length;j++){const t=targets[j];
+      if(s===t)return true;
+      const sq=s.replace(/[' ]/g,''),tq=t.replace(/[' ]/g,'');
+      if(sq===tq)return true; /* "everyday" vs "every day" etc. */
+      if(tq.length>5&&lev(sq,tq)/tq.length<=0.18)return true; /* small mishears pass */
+      const st=s.split(' '),tt=t.split(' '),bag={};
+      st.forEach(w=>bag[w]=(bag[w]||0)+1);
+      let hit=0;tt.forEach(w=>{if(bag[w]>0){bag[w]--;hit++;}});
+      if(hit/tt.length>=0.8&&st.length<=tt.length+3)return true;
+    }}
+  return false;
+}
+function sayOrFile(file,text){try{const a=new Audio(file);a.onerror=()=>say(text);a.play().catch(()=>say(text));}catch(e){say(text);}}
+
+function flashFX(big){const d=document.createElement('div');d.className='flashfx'+(big?' big':'');document.body.appendChild(d);if(big){sfxStar();sfxFlashS();}else sfxFlashS();setTimeout(()=>d.remove(),big?950:650);}
+
+/* ═══════════ SPEAKING QUEST · game core ═══════════ */
+const $=id=>document.getElementById(id);
+function ruby(t){return String(t).replace(/([一-龯々]+)（([ぁ-んァ-ヶー]+)）|([一-龯々]+)\(([ぁ-んァ-ヶー]+)\)/g,(m,k1,r1,k2,r2)=>`<ruby>${k1||k2}<rt>${r1||r2}</rt></ruby>`);}
+
+/* ── recorder module: ephemeral echo + waveform ── */
+let micStream=null,recorder=null,lastEchoURL=null,audioCtxA=null,analyser=null,waveRAF=0;
+async function getMic(){
+  if(micStream)return micStream;
+  micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  return micStream;
+}
+function startEcho(){
+  try{
+    recorder=new MediaRecorder(micStream);
+    const chunks=[];
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+    recorder.onstop=()=>{
+      if(lastEchoURL)URL.revokeObjectURL(lastEchoURL);
+      lastEchoURL=chunks.length?URL.createObjectURL(new Blob(chunks,{type:recorder.mimeType||'audio/webm'})):null;
+      if(state.onEchoReady)state.onEchoReady();
+    };
+    recorder.start();
+  }catch(e){recorder=null;}
+}
+function stopEcho(){try{if(recorder&&recorder.state!=='inactive')recorder.stop();}catch(e){}}
+function playEcho(){if(lastEchoURL){const a=new Audio(lastEchoURL);a.play().catch(()=>{});}}
+function startWave(canvas){
+  try{
+    if(!audioCtxA){audioCtxA=new (window.AudioContext||window.webkitAudioContext)();}
+    if(audioCtxA.state==='suspended')audioCtxA.resume();
+    const src=audioCtxA.createMediaStreamSource(micStream);
+    analyser=audioCtxA.createAnalyser();analyser.fftSize=128;src.connect(analyser);
+    const ctx=canvas.getContext('2d');const data=new Uint8Array(analyser.frequencyBinCount);
+    (function draw(){
+      waveRAF=requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(data);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const n=24,bw=canvas.width/n;
+      for(let i=0;i<n;i++){
+        const v=data[Math.floor(i*data.length/n)]/255;
+        const h=Math.max(3,v*canvas.height*0.9);
+        ctx.fillStyle=v>0.55?'#9060c0':'#c9a030';
+        ctx.fillRect(i*bw+2,(canvas.height-h)/2,bw-4,h);
+      }
+    })();
+  }catch(e){}
+}
+function stopWave(){cancelAnimationFrame(waveRAF);}
+
+/* ── tier detection ──
+   A: recognize + record simultaneously · B: two-pass · C: echo only (no SR) · D: listen & repeat (no mic) */
+let TIER=null, srBrokeOnce=false;
+async function detectTier(){
+  if(TIER)return TIER;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){TIER='D';return TIER;}
+  try{await getMic();}catch(e){TIER='D';return TIER;}
+  TIER=SR?'A':'C';
+  return TIER;
+}
+function demoteToB(){if(TIER==='A'){TIER='B';toastTier();}}
+function tierLabel(){return {A:'Full Mode · 判定(はんてい)＋エコー',B:'2-Step Mode · 判定(はんてい)→エコー',C:'Echo Mode · ききくらべ',D:'Listen & Repeat · きいて まねする'}[TIER]||'';}
+function toastTier(){const el=$('hud-mid');if(el)el.textContent=tierLabel();}
+
+/* ── state ── */
+const state={mode:null,items:[],idx:0,pass:0,hits:[],hearts:5,trial:false,onEchoReady:null,attempts:0};
+const STARKEY='hp_sq_stars';
+function stars(){try{return JSON.parse(localStorage.getItem(STARKEY)||'{}');}catch(e){return{}}}
+function addStar(k){const s=stars();s[k]=(s[k]||0)+1;localStorage.setItem(STARKEY,JSON.stringify(s));}
+
+/* ── diff renderer: target words colored by presence in what was heard ── */
+function diffHTML(targetEn,alts){
+  const bag={};
+  (alts||[]).forEach(a=>normEn(a).split(' ').forEach(w=>bag[w]=1));
+  return targetEn.split(' ').map(w=>{
+    const n=normEn(w);
+    const hit=!n||bag[n]||n.split(' ').every(x=>bag[x]);
+    return `<span class="${hit?'hit':'miss'}">${w}</span>`;
+  }).join(' ');
+}
+
+/* ── screens ── */
+function show(id){['title','picker','game','results'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function goTitle(){stopWave();show('title');renderStars();}
+document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{sfxTap();goTitle();}));
+function renderStars(){
+  const s=stars();const tot=Object.values(s).reduce((a,b)=>a+b,0);
+  $('star-row').textContent=tot?('⭐ Voice Proof / こえの証: '+tot):'';
+  $('tier-title').textContent=TIER?('🎛 Mode / いまのモード: '+tierLabel()):'';
+}
+
+const CAT_EN={"📖 ストーリーの新出単語(しんしゅつたんご)": "New story words", "👋 あいさつ": "Greetings", "🏫 教室(きょうしつ)のことば": "Classroom words", "🔢 数(かず) 1〜12": "Numbers 1–12", "📅 曜日(ようび)（What day is it?）": "Days of the week", "☀️ 天気(てんき)（How is the weather?）": "Weather", "⚽ スポーツ": "Sports", "🏃 できること（can + 動作(どうさ)）": "Things you can do (can + verb)", "🎵 楽器(がっき)": "Instruments", "🐾 動物(どうぶつ)（I like ~ / I have ~）": "Animals (I like / I have)", "✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）": "People & personality (He/She is ~)", "👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）": "Family & people (This is my ~)", "💼 しごとのことば（He is a ~ / She is a ~）": "Jobs (He/She is a ~)", "🍛 食(た)べ物(もの)（What food do you like?）": "Food (What food do you like?)", "🎨 色(いろ)（What color do you like?）": "Colors (What color do you like?)", "🔢 大(おお)きい数(かず)（How many ~?）": "Big numbers (How many ~?)", "📚 教科(きょうか)（What subject do you like?）": "School subjects", "🥤 のみもの": "Drinks", "🕘 時間(じかん)のことば（What time ~?）": "Time words (What time ~?)", "👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)": "Command verbs", "📍 位置(いち)のことば（Look under the desk!）": "Position words (Look under the desk!)", "🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）": "Daily actions (he / she says!)", "⏰ ひんど・くりかえしのことば": "How-often words", "🏠 家(いえ)の中(なか)（He sleeps in his bed.）": "Around the house", "🎒 持(も)ち物(もの)（Whose ~ is this?）": "Belongings (Whose ~ is this?)", "🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）": "Mine / yours words", "🏙 町(まち)のたてもの（Whose house is this?）": "Town buildings (Whose house is this?)", "🔄 動詞(どうし)の ing 変身表(へんしんひょう)": "Verb + ing change chart", "⚡ 「今(いま)」を表(あらわ)すことば": "Right-now words", "🔄 変身表(へんしんひょう)・その2": "Change chart, part 2", "😊 気持(きも)ち・様子(ようす)（look + ~）": "Feelings (look + ~)", "💭 したいこと（want to + ~）": "Things you want to do (want to ~)", "🎨 〜するのが好(す)き（like ~ing）": "Like + ~ing", "🌊 見(み)たいもの・自然(しぜん)（I want to see ~）": "Nature you want to see", "🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)": "Irregular verb change chart", "➕ 規則動詞(きそくどうし)（+ ed）": "Regular verbs (+ ed)", "📅 過去(かこ)の時(とき)ことば": "Past-time words", "🔮 不規則動詞(ふきそくどうし)・その2": "Irregular verbs, part 2", "🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）": "How was it? words", "❄️ 冬(ふゆ)と旅(たび)のことば": "Winter & travel words", "🕰 was / were の選(えら)び方(かた)": "Choosing was / were", "🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）": "School events & memories", "🌍 世界(せかい)のことば": "World words", "💖 気持(きも)ちを伝(つた)えることば": "Sharing feelings", "🔗 文(ぶん)をつなぐことば": "Words that link sentences"};
+/* ── mode entry ── */
+$('m-word').addEventListener('click',async()=>{sfxTap();await detectTier();openPicker('word');});
+$('m-spell').addEventListener('click',async()=>{sfxTap();await detectTier();openPicker('spell');});
+$('m-trial').addEventListener('click',async()=>{
+  sfxTap();await detectTier();
+  if(TIER==='C'||TIER==='D'){voicePopup(false,'This mode needs a mic + speech recognition / このモードには マイク＋おんせいにんしきが ひつようだよ','Play on Chrome, Edge, or Android! / Chrome・Edge・Android で あそんでね！');return;}
+  startRun('trial',SQ_SPELLS.filter(x=>x.a&&x.en.split(' ').length<=8),7,true);
+});
+function openPicker(mode){
+  show('picker');
+  const grid=$('pick-grid');grid.innerHTML='';
+  if(mode==='word'){
+    $('pick-title').textContent='Choose a category! / カテゴリを えらぼう！';
+    const cats=[...new Set(SQ_WORDS.map(w=>w.c))];
+    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 All Mix / ぜんぶミックス<small>'+SQ_WORDS.length+' words / 語</small>';
+    all.addEventListener('click',()=>{sfxTap();startRun('word',SQ_WORDS,10,false);});
+    grid.appendChild(all);
+    cats.forEach(c=>{
+      const n=SQ_WORDS.filter(w=>w.c===c).length;
+      const b=document.createElement('button');b.className='pick-btn';b.innerHTML=ruby(c)+(CAT_EN[c]?'<small style="display:block;margin-top:2px;">'+CAT_EN[c]+'</small>':'')+'<small>'+n+' words / 語</small>';
+      b.addEventListener('click',()=>{sfxTap();startRun('word',SQ_WORDS.filter(w=>w.c===c),Math.min(10,n),false);});
+      grid.appendChild(b);
+    });
+  }else{
+    $('pick-title').textContent='Choose a stage! / ステージを えらぼう！';
+    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 All Mix / ぜんぶミックス<small>'+SQ_SPELLS.length+' sentences / 文</small>';
+    all.addEventListener('click',()=>{sfxTap();startRun('spell',SQ_SPELLS,10,false);});
+    grid.appendChild(all);
+    for(let sid=0;sid<=11;sid++){
+      const pool=SQ_SPELLS.filter(x=>x.s===sid);if(!pool.length)continue;
+      const b=document.createElement('button');b.className='pick-btn';b.innerHTML='Stage '+sid+' / ステージ'+sid+'<small>'+pool.length+' sentences / 文</small>';
+      b.addEventListener('click',()=>{sfxTap();startRun('spell',pool,10,false);});
+      grid.appendChild(b);
+    }
+  }
+}
+function shufSlice(arr,n){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a.slice(0,n);}
+
+/* ── run lifecycle ── */
+function startRun(mode,pool,n,trial){
+  state.mode=mode;state.items=shufSlice(pool,n);state.idx=0;state.pass=0;state.hits=[];
+  state.trial=trial;state.hearts=5;
+  show('game');
+  $('trial-circle').classList.toggle('hidden',!trial);
+  $('gauge-wrap').classList.toggle('hidden',trial);
+  toastTier();
+  round();
+}
+function itemText(it){return it.w?it.w.replace(/\s*→\s*/g,', '):it.en;}
+function itemTarget(it){
+  if(it.w){const parts=it.w.split('→').map(x=>x.trim()).filter(Boolean);return {en:itemText(it),accept:[itemText(it)].concat(parts)};}
+  return {en:it.en,accept:it.a};
+}
+function itemVoiceFile(it){return it.w?('voice/word_'+wslug(it.w)+'.mp3'):('voice/spell_sq.mp3');}
+function segCircle(lit,n){
+  const r=60,c=2*Math.PI*r,seg=c/n,gap=5;
+  let out=`<img class="circle-lumi ${lit>=n?'lit':''}" src="assets/char/story/lumi-chibi.png" alt="" onerror="this.style.display='none'">`;
+  out+=`<svg class="mcircle ${lit>=n?'complete':''}" viewBox="0 0 150 150">`;
+  for(let i=0;i<n;i++)out+=`<circle class="seg ${i<lit?'lit':''}" cx="75" cy="75" r="${r}" stroke-dasharray="${seg-gap} ${c-seg+gap}" stroke-dashoffset="${-i*seg}"></circle>`;
+  return out+'</svg>';
+}
+function hud(){
+  $('hud-right').innerHTML=state.trial
+    ?'<span class="hearts">'+'❤️'.repeat(state.hearts)+'<span class="lost">'+'🤍'.repeat(5-state.hearts)+'</span></span>'
+    :((state.idx+1)+' / '+state.items.length);
+  if(!state.trial)$('gauge').style.width=(state.pass/state.items.length*100)+'%';
+  if(state.trial)$('trial-circle').innerHTML=segCircle(state.pass,state.items.length);
+}
+
+/* ── one round ── */
+function round(){
+  stopWave();state.attempts=0;state.onEchoReady=null;
+  if(state.idx>=state.items.length){return finish();}
+  hud();
+  const it=state.items[state.idx];
+  const tgt=itemTarget(it);
+  const q=$('qcard');
+  q.innerHTML=`
+    <p class="q-en">${tgt.en}</p>
+    ${it.k?`<p class="q-yomi">${it.k} · /${it.p}/</p>`:''}
+    <p class="q-jp">${ruby(it.m||it.jp||'')}</p>
+    <div class="tools">
+      <button class="say-btn" id="b-model">🔊 Model / おてほん</button>
+      ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it! / いってみる！</button>':''}
+      ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Judge / はんてい</button><button class="echo-btn" id="b-rec">⏺ Record echo / エコーをのこす</button>':''}
+      ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ Record & compare / ろくおんして ききくらべ</button>':''}
+      ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ I said it out loud! / こえに だして よめたよ！</button>':''}
+    </div>
+    <canvas id="wave" width="220" height="42" class="hidden"></canvas>
+    <div id="round-out"></div>
+    <button class="skip-btn hidden" id="b-skip">Next / つぎへ →</button>
+  `;
+  const model=$('b-model');
+  model.addEventListener('click',()=>{sfxTap();zapEl(model);sayOrFile(it.w?('voice/word_'+wslug(it.w)+'.mp3'):'',itemText(it));});
+  if(TIER==='A')$('b-go').addEventListener('click',()=>attemptA(it,tgt));
+  if(TIER==='B'){$('b-judge').addEventListener('click',()=>attemptJudge(it,tgt));$('b-rec').addEventListener('click',()=>attemptEchoOnly(3000));}
+  if(TIER==='C')$('b-rec').addEventListener('click',()=>attemptEchoOnly(3500,tgt));
+  if(TIER==='D')$('b-self').addEventListener('click',()=>{sfxGood();flashFX(false);pass(it,tgt,['(self check)']);});
+  $('b-skip').addEventListener('click',()=>{sfxTap();state.hits.push({en:tgt.en,ok:false,heard:'(skip)'});state.idx++;round();});
+}
+function showSkipAfterFails(){if(state.attempts>=2&&!state.trial)$('b-skip').classList.remove('hidden');}
+
+/* Tier A: recognize + record together */
+function attemptA(it,tgt){
+  const btn=$('b-go');if(btn.classList.contains('rec'))return;
+  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening… / きいてるよ…';
+  const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
+  startEcho();
+  let recorderGotUsed=true;
+  listenOnce(alts=>{
+    btn.classList.remove('rec');btn.textContent='🎤 Say it! / いってみる！';
+    stopWave();wave.classList.add('hidden');stopEcho();
+    if(!alts.length){
+      if(recorderGotUsed&&lastEchoURL===null&&!srBrokeOnce){srBrokeOnce=true;}
+      else if(srBrokeOnce){demoteToB();round();return;}
+      $('round-out').innerHTML='<p class="heardline">(I could not hear you… get close to the mic and try again! / きこえなかった…マイクのちかくで、もういちど！)</p>';return;
+    }
+    handleResult(it,tgt,alts,true);
+  });
+}
+/* Tier B: judge pass (SR only) */
+function attemptJudge(it,tgt){
+  const btn=$('b-judge');if(btn.classList.contains('rec'))return;
+  sfxMicOn();btn.classList.add('rec');
+  listenOnce(alts=>{
+    btn.classList.remove('rec');
+    if(!alts.length){$('round-out').innerHTML='<p class="heardline">(I could not hear you… try again! / きこえなかった…もういちど！)</p>';return;}
+    handleResult(it,tgt,alts,false);
+  });
+}
+/* echo-only recording (Tier B second pass / Tier C) */
+function attemptEchoOnly(ms,tgt){
+  sfxMicOn();
+  const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
+  state.onEchoReady=()=>{
+    state.onEchoReady=null;
+    renderEchoRow(true);
+    if(TIER==='C'&&tgt){
+      $('round-out').insertAdjacentHTML('beforeend',
+        `<div class="tools"><button class="echo-btn" id="b-selfok">⭕ I said it! / いえた！</button><button class="echo-btn" id="b-selfng">🔁 Try again / もういちど</button></div>`);
+      $('b-selfok').addEventListener('click',()=>{sfxGood();flashFX(false);pass(state.items[state.idx],tgt,['(self check)']);});
+      $('b-selfng').addEventListener('click',()=>{sfxTap();state.attempts++;showSkipAfterFails();});
+    }
+  };
+  startEcho();
+  setTimeout(()=>{stopWave();wave.classList.add('hidden');stopEcho();},ms);
+}
+function renderEchoRow(fresh){
+  let row=document.getElementById('echo-row');
+  if(!row){
+    $('round-out').insertAdjacentHTML('beforeend',
+      `<div class="echo-row" id="echo-row">
+        <button class="echo-btn" id="b-play-me">▶️ Your voice / きみのこえ</button>
+        <button class="echo-btn" id="b-play-lumi">🔊 Lumi / ルミ</button>
+      </div>`);
+    document.getElementById('b-play-me').addEventListener('click',()=>{sfxTap();playEcho();});
+    document.getElementById('b-play-lumi').addEventListener('click',()=>{sfxTap();say(itemText(state.items[state.idx]));});
+  }
+}
+/* shared result handling */
+function handleResult(it,tgt,alts,haveEcho){
+  if(anyNaughty(alts)){blockPopup();return;}
+  const matchable={en:tgt.en,accept:tgt.accept};
+  const ok=fuzzyPass(alts,matchable);
+  $('round-out').innerHTML=
+    `<p class="diff">${diffHTML(tgt.en,alts)}</p>
+     <p class="heardline">The magic circle heard / まほうじんが きいたこと: <b>${alts[0]}</b></p>`;
+  if(haveEcho)renderEchoRow();
+  if(ok){
+    sfxGood();flashFX(false);voicePopup(true,alts[0]);
+    pass(it,tgt,alts,haveEcho);
+  }else{
+    state.attempts++;sfxOops();
+    voicePopup(false,alts[0],tgt.en);
+    if(state.trial){
+      state.hearts--;hud();
+      if(state.hearts<=0)return finish(true);
+    }
+    showSkipAfterFails();
+  }
+}
+function pass(it,tgt,alts,haveEcho){
+  state.pass++;state.hits.push({en:tgt.en,ok:true,heard:(alts&&alts[0])||''});
+  hud();
+  const q=$('round-out');
+  q.insertAdjacentHTML('beforeend','<div style="text-align:center;"><button class="next-btn" id="b-next">Next / つぎへ →</button></div>');
+  document.getElementById('b-next').addEventListener('click',()=>{sfxTap();state.idx++;round();});
+}
+/* ── results ── */
+function finish(gameOver){
+  stopWave();show('results');
+  const pct=state.items.length?Math.round(state.pass/state.items.length*100):0;
+  const key=state.trial?'trial':state.mode;
+  let head;
+  if(state.trial&&!gameOver&&state.pass>=state.items.length){
+    head=`<div style="text-align:center;">${segCircle(state.items.length,state.items.length)}
+      <div class="res-head-en">ANCHOR TRIAL CLEAR!</div>
+      <p class="res-sub">The magic circle is complete — Voice Hero! 🎉<br>まほうじん、完成(かんせい)！こえの勇者(ゆうしゃ)だ！🎉</p></div>`;
+    addStar('trial');flashFX(true);
+  }else if(gameOver){
+    head=`<div style="text-align:center;"><div style="font-size:2.4rem;">💜</div>
+      <p class="res-sub">Out of hearts… but your voice got stronger! Try again!<br>ハートが なくなっちゃった…でも こえは きたえられたよ！もういちど チャレンジ！</p></div>`;
+  }else{
+    head=`<div style="text-align:center;"><div style="font-size:2.4rem;">${pct>=80?'🌟':pct>=50?'✨':'💪'}</div>
+      <p class="res-sub">Clear rate / クリア率(りつ): <b style="font-size:1.35rem;color:var(--purple-dark);">${pct}%</b></p></div>`;
+    if(pct>=80)addStar(state.mode);
+    if(pct>=80)flashFX(true);
+  }
+  const list=state.hits.map(h=>`<div class="res-item">${h.ok?'⭕':'△'} <b>${h.en}</b><br><span style="font-size:.72rem;">heard / きこえた: ${h.heard}</span></div>`).join('');
+  $('res-body').innerHTML=head+list;
+  $('res-again').onclick=()=>{sfxTap();show('game');state.idx=0;state.pass=0;state.hits=[];state.hearts=5;state.items=shufSlice(state.items.concat(),state.items.length);round();};
+  $('res-home').onclick=()=>{sfxTap();goTitle();};
+}
+/* boot */
+renderStars();
+
+</script>
+</body>
+</html>
