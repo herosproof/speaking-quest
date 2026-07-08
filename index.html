@@ -319,6 +319,46 @@ function sayOrFile(file,text){try{const a=new Audio(file);a.onerror=()=>say(text
 
 function flashFX(big){const d=document.createElement('div');d.className='flashfx'+(big?' big':'');document.body.appendChild(d);if(big){sfxStar();sfxFlashS();}else sfxFlashS();setTimeout(()=>d.remove(),big?950:650);}
 
+/* ── SR diagnostics + tier-fallback helpers (SQ-only; engine above untouched) ── */
+let lastSRError='',srFailA=0,srFailB=0;
+function listenOnceErr(onResult){
+  lastSRError='';
+  const r=listenOnce(onResult);
+  r.onerror=e=>{lastSRError=(e&&e.error)||'unknown';};
+  return r;
+}
+function srHint(){
+  const e=lastSRError;let en,jp;
+  if(e==='network'){en='Speech check needs the internet — check your connection and try again!';jp='おんせいにんしきは インターネットが ひつよう…つながってるか たしかめてね！';}
+  else if(e==='not-allowed'||e==='service-not-allowed'){en='The browser is blocking the mic — allow it from the 🔒 icon in the address bar!';jp='ブラウザが マイクを ブロックしてるみたい…アドレスバーの 🔒 から きょかしてね！';}
+  else if(e==='audio-capture'){en='Another app or tab may be using the mic — close it and try again!';jp='ほかのアプリが マイクを つかってるかも…とじてから もういちど！';}
+  else {en='I could not hear you… get close to the mic, speak up, and try again!';jp='きこえなかった…マイクの ちかくで、おおきな こえで もういちど！';}
+  return '<p class="heardline">('+en+'<br>'+jp+')</p>';
+}
+function infoPopup(icon,title,body){
+  const old=document.querySelector('.voice-pop');if(old)old.remove();
+  const d=document.createElement('div');d.className='voice-pop';
+  d.innerHTML=`<div class="vp-card"><div class="vp-icon">${icon}</div>
+    <p class="vp-label">${title}</p>
+    <p class="vp-target" style="text-align:left;line-height:1.8;">${body}</p>
+    <button class="vp-close">OK! / わかった！</button></div>`;
+  document.body.appendChild(d);
+  const close=()=>{if(d.parentNode)d.remove();};
+  d.addEventListener('click',e=>{if(e.target===d)close();});
+  d.querySelector('.vp-close').addEventListener('click',close);
+}
+const seenHowto={};
+function howtoPopup(){
+  if(seenHowto[TIER])return;seenHowto[TIER]=1;
+  const H={
+    A:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② 🎤 Say it! — the magic circle listens AND records you<br>　いってみよう！まほうじんが きいて、ろくおんもするよ<br>③ ▶️ Compare — your voice vs 🔊 Lumi!<br>　きみのこえ と ルミを ききくらべ！',
+    B:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② 🎤 Voice Check — say it, the magic circle judges ⭕/△<br>　いってみて、まほうじんが はんてい！<br>③ ⏺ Record echo — record yourself, then compare ▶️ you and 🔊 Lumi<br>　じぶんの こえを ろくおんして ききくらべ！',
+    C:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② ⏺ Record & compare — say it while it records<br>　いいながら ろくおん！<br>③ ▶️ Listen to yourself vs Lumi, then tap ⭕ or 🔁<br>　ききくらべて ⭕か🔁を えらぼう！',
+    D:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② Say it out loud!<br>　こえに だして いってみよう！<br>③ Tap ✅ when you said it<br>　いえたら ✅を タップ！'
+  }[TIER]||'';
+  infoPopup('💡','How to play / あそびかた',H);
+}
+
 /* ═══════════ SPEAKING QUEST · game core ═══════════ */
 const $=id=>document.getElementById(id);
 function ruby(t){return String(t).replace(/([一-龯々]+)（([ぁ-んァ-ヶー]+)）|([一-龯々]+)\(([ぁ-んァ-ヶー]+)\)/g,(m,k1,r1,k2,r2)=>`<ruby>${k1||k2}<rt>${r1||r2}</rt></ruby>`);}
@@ -330,6 +370,7 @@ async function getMic(){
   micStream=await navigator.mediaDevices.getUserMedia({audio:true});
   return micStream;
 }
+function releaseMic(){try{if(micStream)micStream.getTracks().forEach(t=>t.stop());}catch(e){}micStream=null;}
 function startEcho(){
   try{
     recorder=new MediaRecorder(micStream);
@@ -456,6 +497,8 @@ function startRun(mode,pool,n,trial){
   $('trial-circle').classList.toggle('hidden',!trial);
   $('gauge-wrap').classList.toggle('hidden',trial);
   toastTier();
+  srFailA=0;srFailB=0;
+  howtoPopup();
   round();
 }
 function itemText(it){return it.w?it.w.replace(/\s*→\s*/g,', '):it.en;}
@@ -494,7 +537,7 @@ function round(){
     <div class="tools">
       <button class="say-btn" id="b-model">🔊 Model / おてほん</button>
       ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it! / いってみる！</button>':''}
-      ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Judge / はんてい</button><button class="echo-btn" id="b-rec">⏺ Record echo / エコーをのこす</button>':''}
+      ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Voice Check / はんてい</button><button class="echo-btn" id="b-rec">⏺ Record echo / エコーをのこす</button>':''}
       ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ Record & compare / ろくおんして ききくらべ</button>':''}
       ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ I said it out loud! / こえに だして よめたよ！</button>':''}
     </div>
@@ -518,30 +561,48 @@ function attemptA(it,tgt){
   sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening… / きいてるよ…';
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
   startEcho();
-  let recorderGotUsed=true;
-  listenOnce(alts=>{
+  listenOnceErr(alts=>{
     btn.classList.remove('rec');btn.textContent='🎤 Say it! / いってみる！';
     stopWave();wave.classList.add('hidden');stopEcho();
     if(!alts.length){
-      if(recorderGotUsed&&lastEchoURL===null&&!srBrokeOnce){srBrokeOnce=true;}
-      else if(srBrokeOnce){demoteToB();round();return;}
-      $('round-out').innerHTML='<p class="heardline">(I could not hear you… get close to the mic and try again! / きこえなかった…マイクのちかくで、もういちど！)</p>';return;
+      srFailA++;
+      if(srFailA>=2){
+        srFailA=0;demoteToB();
+        infoPopup('🔁','Switching to 2-Step Mode! / 2だんかいモードに きりかえ！',
+          'Your browser could not listen and record at the same time. From now on: first 🎤 Voice Check, then ⏺ record your echo!<br>きく と ろくおんが いっしょに できなかったみたい。これからは まず 🎤はんてい、つぎに ⏺エコーの 2だんかいで いこう！');
+        round();return;
+      }
+      $('round-out').innerHTML=srHint();return;
     }
+    srFailA=0;
     handleResult(it,tgt,alts,true);
   });
 }
 /* Tier B: judge pass (SR only) */
 function attemptJudge(it,tgt){
   const btn=$('b-judge');if(btn.classList.contains('rec'))return;
-  sfxMicOn();btn.classList.add('rec');
-  listenOnce(alts=>{
-    btn.classList.remove('rec');
-    if(!alts.length){$('round-out').innerHTML='<p class="heardline">(I could not hear you… try again! / きこえなかった…もういちど！)</p>';return;}
+  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening… / きいてるよ…';
+  releaseMic(); /* free the mic so SpeechRecognition can grab it; ⏺ re-acquires later */
+  listenOnceErr(alts=>{
+    btn.classList.remove('rec');btn.textContent='🎤 Voice Check / はんてい';
+    if(!alts.length){
+      srFailB++;
+      const fatal=/network|not-allowed|service-not-allowed|audio-capture/.test(lastSRError);
+      if(fatal||srFailB>=3){
+        srFailB=0;TIER='C';toastTier();
+        infoPopup('🎧','Switching to Echo Mode! / エコーモードに きりかえ！',
+          'Speech recognition is not working on this device, so YOU are the judge: ⏺ record, ▶️ compare your voice with Lumi, and tap ⭕ if you said it!<br>おんせいにんしきが うごかないみたい。⏺ろくおんして ルミと ききくらべ、いえたら ⭕を おしてね！');
+        round();return;
+      }
+      $('round-out').innerHTML=srHint();return;
+    }
+    srFailB=0;
     handleResult(it,tgt,alts,false);
   });
 }
 /* echo-only recording (Tier B second pass / Tier C) */
-function attemptEchoOnly(ms,tgt){
+async function attemptEchoOnly(ms,tgt){
+  try{await getMic();}catch(e){$('round-out').innerHTML='<p class="heardline">(I need mic permission… allow it from the 🔒 icon! / マイクの きょかが ひつよう…🔒 から きょかしてね！)</p>';return;}
   sfxMicOn();
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
   state.onEchoReady=()=>{
