@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,7 +47,6 @@ button{cursor:pointer;font-family:inherit;}
 .sc-lumi{width:64px;height:64px;flex-shrink:0;object-fit:cover;border-radius:10px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));animation:embFloat 3s ease-in-out infinite;}
 @keyframes embFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
 .sc-name{font-family:'Press Start 2P',monospace;font-size:.5rem;color:var(--purple);margin-bottom:5px;}
-.sc-en{font-size:.9rem;font-weight:700;color:var(--text-dark);line-height:1.5;margin-bottom:3px;}
 .sc-jp{font-family:'Zen Maru Gothic','Kosugi Maru',sans-serif;font-size:.84rem;font-weight:700;color:var(--text-soft);line-height:1.75;}
 
 /* ── chunky hub buttons ── */
@@ -61,7 +60,6 @@ button{cursor:pointer;font-family:inherit;}
 .mode-btn .en{font-family:'Press Start 2P',monospace;font-size:.6rem;color:var(--purple-dark);display:block;margin-bottom:6px;letter-spacing:.05em;}
 .mode-btn .ja{font-family:'Zen Maru Gothic',sans-serif;font-size:1.02rem;font-weight:900;color:var(--text-dark);}
 .mode-btn .desc{display:block;font-family:'Zen Maru Gothic',sans-serif;font-size:.76rem;font-weight:700;color:var(--text-soft);margin-top:5px;line-height:1.6;}
-.mode-btn .desc-en{display:block;font-family:'Fredoka',sans-serif;font-size:.74rem;font-weight:600;color:var(--text-soft);margin-top:6px;line-height:1.45;opacity:.9;}
 .mode-btn.gold{background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));border-color:var(--gold);box-shadow:0 4px 0 #a07820;}
 .mode-btn.gold:active{box-shadow:0 1px 0 #a07820;}
 .mode-btn.gold .en{color:var(--brown);}
@@ -145,6 +143,7 @@ button{cursor:pointer;font-family:inherit;}
 .vp-heard{font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text-dark);margin:0 0 10px;line-height:1.5;word-break:break-word;}
 .vp-target{font-family:'Zen Maru Gothic',sans-serif;font-size:.85rem;color:var(--text-soft);margin:0 0 12px;}
 .vp-close{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));color:var(--brown);border:2px solid var(--gold);border-radius:12px;padding:11px 22px;font-weight:900;font-size:1rem;box-shadow:0 3px 0 #a07820;}
+.djp{display:block;font-size:.86em;opacity:.85;margin-top:3px;line-height:1.8;}
 </style>
 </head>
 <body>
@@ -164,20 +163,19 @@ button{cursor:pointer;font-family:inherit;}
            onerror="this.onerror=null;this.src='lumi.png';">
       <div>
         <div class="sc-name">Lumi / ルミ</div>
-        <div class="sc-en">Listen to my model, then say it into the mic! Your voice is recorded too, so you can compare it with mine 🎤✨</div>
-        <div class="sc-jp">おてほんを きいて、マイクに むかって いってみて！きみの こえも きろくして、私(わたし)と ききくらべ できるよ🎤✨</div>
+        <div class="sc-jp">Listen to the model, then say it into the mic! I'll record your voice so we can listen and compare, you and me 🎤✨<br><span class="djp">おてほんを きいて、マイクに むかって いってみて！きみの こえも きろくして、私(わたし)と ききくらべ できるよ</span></div>
       </div>
     </div>
-    <button class="mode-btn gold" id="m-word"><span class="en">WORD ECHO 🎴</span><span class="ja">ことばエコー</span><span class="desc-en">One word at a time. Pick a category — 10 rounds!</span><span class="desc">たんごを 1つずつ。カテゴリを えらんで 10もん！</span></button>
-    <button class="mode-btn" id="m-spell"><span class="en">SPELL ECHO 🔮</span><span class="ja">じゅもんエコー</span><span class="desc-en">Full sentences from the story. Pick a stage — 10 rounds!</span><span class="desc">ものがたりの フルセンテンス。ステージを えらんで 10もん！</span></button>
-    <button class="mode-btn trial" id="m-trial"><span class="en">ANCHOR TRIAL 👑</span><span class="ja">アンカーの試練(しれん)</span><span class="desc-en">7 spells × 5 hearts. Complete the magic circle!</span><span class="desc">7つの じゅもん × ハート5こ。まほうじんを 完成(かんせい)させよ！</span></button>
+    <button class="mode-btn gold" id="m-word"><span class="en">WORD ECHO 🎴</span><span class="ja">ことばエコー</span><span class="desc">One word at a time. Pick a category — 10 rounds!<span class="djp">たんごを 1つずつ。カテゴリを えらんで 10もん！</span></span></button>
+    <button class="mode-btn" id="m-spell"><span class="en">SPELL ECHO 🔮</span><span class="ja">じゅもんエコー</span><span class="desc">Full sentences from the story. Pick a stage — 10 rounds!<span class="djp">ものがたりの フルセンテンス。ステージを えらんで 10もん！</span></span></button>
+    <button class="mode-btn trial" id="m-trial"><span class="en">ANCHOR TRIAL 👑</span><span class="ja">アンカーの試練(しれん)</span><span class="desc">Seven spells × five hearts. Complete the magic circle!<span class="djp">7つの じゅもん × ハート5こ。まほうじんを 完成(かんせい)させよ！</span></span></button>
     <div class="stars-row" id="star-row"></div>
-    <p class="tiny">🔒 Your voice stays on this screen only — nothing is uploaded, and it disappears when you close.<br>きみの こえは この画面(がめん)の中(なか)だけ。どこにも おくられません。とじたら きえます。</p>
+    <p class="tiny">🔒 Your voice stays on this screen only — it is never sent anywhere, and it disappears when you close the page.<br><span class="djp">きみの こえは この画面(がめん)の中(なか)だけ。どこにも おくられません。とじたら きえます。</span></p>
     <p class="tiny" id="tier-title" style="margin-top:2px;"></p>
   </div>
 
   <div id="picker" class="panel hidden">
-    <button class="back-btn" data-back="title">← Back / もどる</button>
+    <button class="back-btn" data-back="title">← もどる</button>
     <p class="pick-title" id="pick-title"></p>
     <div class="pick-grid" id="pick-grid"></div>
   </div>
@@ -185,7 +183,7 @@ button{cursor:pointer;font-family:inherit;}
   <div id="game" style="width:100%" class="hidden">
     <div class="hud">
       <div class="hud-row">
-        <button class="back-btn" data-back="title" style="background:rgba(245,238,220,.12);border-color:rgba(200,160,224,.4);color:#e6d9ff;">← Quit / やめる</button>
+        <button class="back-btn" data-back="title" style="background:rgba(245,238,220,.12);border-color:rgba(200,160,224,.4);color:#e6d9ff;">← やめる</button>
         <span id="hud-mid" class="tier-note"></span>
         <span id="hud-right"></span>
       </div>
@@ -200,8 +198,8 @@ button{cursor:pointer;font-family:inherit;}
   <div id="results" class="panel hidden">
     <div id="res-body"></div>
     <div style="text-align:center;margin-top:12px;">
-      <button class="next-btn" id="res-again">↺ RETRY / もういちど</button>
-      <button class="next-btn" id="res-home" style="background:linear-gradient(135deg,var(--purple-pale),#d8c8f0);color:var(--text-dark);border-color:var(--purple);box-shadow:0 4px 0 #6840a0;">🏠 TITLE / タイトル</button>
+      <button class="next-btn" id="res-again">↺ RETRY</button>
+      <button class="next-btn" id="res-home" style="background:linear-gradient(135deg,var(--purple-pale),#d8c8f0);color:var(--text-dark);border-color:var(--purple);box-shadow:0 4px 0 #6840a0;">🏠 TITLE</button>
     </div>
   </div>
 
@@ -245,9 +243,9 @@ function blockPopup(){
   const old=document.querySelector('.voice-pop');if(old)old.remove();
   const d=document.createElement('div');d.className='voice-pop';
   d.innerHTML=`<div class="vp-card ng"><div class="vp-icon">✋</div>
-    <p class="vp-label">The magic circle won't take those words!<br>まほうじんは、そのことばを うけとらないよ！</p>
-    <p class="vp-heard">Speak like a hero! / ヒーローの ことばで はなそう！</p>
-    <button class="vp-close">OK! / わかった！</button></div>`;
+    <p class="vp-label">まほうじんは、そのことばを うけとらないよ！</p>
+    <p class="vp-heard">ヒーローの ことばで はなそう！</p>
+    <button class="vp-close">わかった！</button></div>`;
   document.body.appendChild(d);
   const close=()=>{if(d.parentNode)d.remove();};
   d.addEventListener('click',e=>{if(e.target===d)close();});
@@ -258,10 +256,10 @@ function voicePopup(ok,heard,target){
   const d=document.createElement('div');d.className='voice-pop';
   d.innerHTML=`<div class="vp-card ${ok?'ok':'ng'}">
     <div class="vp-icon">${ok?'⭕':'△'}</div>
-    <p class="vp-label">${ok?'It reached the magic circle!<br>まほうじんに とどいた！':'The magic circle heard…<br>まほうじんが きいたのは…'}</p>
+    <p class="vp-label">${ok?'まほうじんに とどいた！':'まほうじんが きいたのは…'}</p>
     <p class="vp-heard">“${heard}”</p>
-    ${!ok&&target?`<p class="vp-target">Model / おてほん: <b>${target}</b></p>`:''}
-    <button class="vp-close">${ok?'Nice! / やったね！':'Try again! / もういちど！'}</button></div>`;
+    ${!ok&&target?`<p class="vp-target">おてほん: <b>${target}</b></p>`:''}
+    <button class="vp-close">${ok?'やったね！':'もういちど！'}</button></div>`;
   document.body.appendChild(d);
   const close=()=>{if(d.parentNode)d.remove();};
   d.addEventListener('click',e=>{if(e.target===d)close();});
@@ -277,7 +275,20 @@ function say(text,rate){try{
   speechSynthesis.cancel();speechSynthesis.speak(u);
 }catch(e){}}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
+/* devices without speech recognition (old iPadOS <14.5, or managed iPads with
+   Siri/Dictation disabled): never crash — explain kindly instead */
+if(!SR){window.addEventListener('DOMContentLoaded',function(){
+  var b=document.createElement('div');
+  b.style.cssText='margin:12px;padding:14px 16px;background:#fff;border:3px solid #c9a030;border-radius:14px;font-family:\'Zen Maru Gothic\',\'Kosugi Maru\',sans-serif;color:#3a2558;line-height:1.9;font-size:.92rem;';
+  b.innerHTML='🎤 <b>Hmm… this device can\'t listen to your voice.</b><br>'+
+    '<span style="color:#6a5a86;">この<ruby>端末<rt>たんまつ</rt></ruby>では マイクの<ruby>聞<rt>き</rt></ruby>き<ruby>取<rt>と</rt></ruby>りが<ruby>使<rt>つか</rt></ruby>えないみたい…</span><br>'+
+    '• Updating iPadOS may fix it! <span style="color:#6a5a86;">／ iPadを<ruby>最新<rt>さいしん</rt></ruby>にアップデートすると<ruby>使<rt>つか</rt></ruby>えるかも！</span><br>'+
+    '• Check Settings → Siri → ON, and Keyboard → Dictation → ON. <span style="color:#6a5a86;">／ <ruby>設定<rt>せってい</rt></ruby> → Siri → オン、キーボード → <ruby>音声入力<rt>おんせいにゅうりょく</rt></ruby> → オン</span><br>'+
+    'Until then: listen to the model, and say it out loud — that\'s real practice too! ✨ <span style="color:#6a5a86;;">／ お<ruby>手本<rt>てほん</rt></ruby>を<ruby>聞<rt>き</rt></ruby>いて、<ruby>声<rt>こえ</rt></ruby>に<ruby>出<rt>だ</rt></ruby>して まねしてみよう！</span>';
+  document.body.insertBefore(b,document.body.firstChild);
+});}
 function listenOnce(onResult){
+  if(!SR){onResult([]);return;}
   const r=new SR();r.lang='en-US';r.interimResults=false;r.maxAlternatives=4;
   let got=false;
   r.onresult=e=>{got=true;onResult([].map.call(e.results[0],a=>a.transcript));};
@@ -319,46 +330,6 @@ function sayOrFile(file,text){try{const a=new Audio(file);a.onerror=()=>say(text
 
 function flashFX(big){const d=document.createElement('div');d.className='flashfx'+(big?' big':'');document.body.appendChild(d);if(big){sfxStar();sfxFlashS();}else sfxFlashS();setTimeout(()=>d.remove(),big?950:650);}
 
-/* ── SR diagnostics + tier-fallback helpers (SQ-only; engine above untouched) ── */
-let lastSRError='',srFailA=0,srFailB=0;
-function listenOnceErr(onResult){
-  lastSRError='';
-  const r=listenOnce(onResult);
-  r.onerror=e=>{lastSRError=(e&&e.error)||'unknown';};
-  return r;
-}
-function srHint(){
-  const e=lastSRError;let en,jp;
-  if(e==='network'){en='Speech check needs the internet — check your connection and try again!';jp='おんせいにんしきは インターネットが ひつよう…つながってるか たしかめてね！';}
-  else if(e==='not-allowed'||e==='service-not-allowed'){en='The browser is blocking the mic — allow it from the 🔒 icon in the address bar!';jp='ブラウザが マイクを ブロックしてるみたい…アドレスバーの 🔒 から きょかしてね！';}
-  else if(e==='audio-capture'){en='Another app or tab may be using the mic — close it and try again!';jp='ほかのアプリが マイクを つかってるかも…とじてから もういちど！';}
-  else {en='I could not hear you… get close to the mic, speak up, and try again!';jp='きこえなかった…マイクの ちかくで、おおきな こえで もういちど！';}
-  return '<p class="heardline">('+en+'<br>'+jp+')</p>';
-}
-function infoPopup(icon,title,body){
-  const old=document.querySelector('.voice-pop');if(old)old.remove();
-  const d=document.createElement('div');d.className='voice-pop';
-  d.innerHTML=`<div class="vp-card"><div class="vp-icon">${icon}</div>
-    <p class="vp-label">${title}</p>
-    <p class="vp-target" style="text-align:left;line-height:1.8;">${body}</p>
-    <button class="vp-close">OK! / わかった！</button></div>`;
-  document.body.appendChild(d);
-  const close=()=>{if(d.parentNode)d.remove();};
-  d.addEventListener('click',e=>{if(e.target===d)close();});
-  d.querySelector('.vp-close').addEventListener('click',close);
-}
-const seenHowto={};
-function howtoPopup(){
-  if(seenHowto[TIER])return;seenHowto[TIER]=1;
-  const H={
-    A:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② 🎤 Say it! — the magic circle listens AND records you<br>　いってみよう！まほうじんが きいて、ろくおんもするよ<br>③ ▶️ Compare — your voice vs 🔊 Lumi!<br>　きみのこえ と ルミを ききくらべ！',
-    B:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② 🎤 Voice Check — say it, the magic circle judges ⭕/△<br>　いってみて、まほうじんが はんてい！<br>③ ⏺ Record echo — record yourself, then compare ▶️ you and 🔊 Lumi<br>　じぶんの こえを ろくおんして ききくらべ！',
-    C:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② ⏺ Record & compare — say it while it records<br>　いいながら ろくおん！<br>③ ▶️ Listen to yourself vs Lumi, then tap ⭕ or 🔁<br>　ききくらべて ⭕か🔁を えらぼう！',
-    D:'① 🔊 Model — listen to Lumi<br>　ルミの おてほんを きく<br>② Say it out loud!<br>　こえに だして いってみよう！<br>③ Tap ✅ when you said it<br>　いえたら ✅を タップ！'
-  }[TIER]||'';
-  infoPopup('💡','How to play / あそびかた',H);
-}
-
 /* ═══════════ SPEAKING QUEST · game core ═══════════ */
 const $=id=>document.getElementById(id);
 function ruby(t){return String(t).replace(/([一-龯々]+)（([ぁ-んァ-ヶー]+)）|([一-龯々]+)\(([ぁ-んァ-ヶー]+)\)/g,(m,k1,r1,k2,r2)=>`<ruby>${k1||k2}<rt>${r1||r2}</rt></ruby>`);}
@@ -370,7 +341,6 @@ async function getMic(){
   micStream=await navigator.mediaDevices.getUserMedia({audio:true});
   return micStream;
 }
-function releaseMic(){try{if(micStream)micStream.getTracks().forEach(t=>t.stop());}catch(e){}micStream=null;}
 function startEcho(){
   try{
     recorder=new MediaRecorder(micStream);
@@ -420,7 +390,7 @@ async function detectTier(){
   return TIER;
 }
 function demoteToB(){if(TIER==='A'){TIER='B';toastTier();}}
-function tierLabel(){return {A:'Full Mode · 判定(はんてい)＋エコー',B:'2-Step Mode · 判定(はんてい)→エコー',C:'Echo Mode · ききくらべ',D:'Listen & Repeat · きいて まねする'}[TIER]||'';}
+function tierLabel(){return {A:'フルモード（判定＋エコー）',B:'2だんかいモード（判定→エコー）',C:'エコーモード（ききくらべ）',D:'リッスン＆リピート'}[TIER]||'';}
 function toastTier(){const el=$('hud-mid');if(el)el.textContent=tierLabel();}
 
 /* ── state ── */
@@ -446,42 +416,53 @@ function goTitle(){stopWave();show('title');renderStars();}
 document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{sfxTap();goTitle();}));
 function renderStars(){
   const s=stars();const tot=Object.values(s).reduce((a,b)=>a+b,0);
-  $('star-row').textContent=tot?('⭐ Voice Proof / こえの証: '+tot):'';
-  $('tier-title').textContent=TIER?('🎛 Mode / いまのモード: '+tierLabel()):'';
+  $('star-row').textContent=tot?('⭐ こえの証: '+tot):'';
+  $('tier-title').textContent=TIER?('🎛 いまのモード: '+tierLabel()):'';
 }
 
-const CAT_EN={"📖 ストーリーの新出単語(しんしゅつたんご)": "New story words", "👋 あいさつ": "Greetings", "🏫 教室(きょうしつ)のことば": "Classroom words", "🔢 数(かず) 1〜12": "Numbers 1–12", "📅 曜日(ようび)（What day is it?）": "Days of the week", "☀️ 天気(てんき)（How is the weather?）": "Weather", "⚽ スポーツ": "Sports", "🏃 できること（can + 動作(どうさ)）": "Things you can do (can + verb)", "🎵 楽器(がっき)": "Instruments", "🐾 動物(どうぶつ)（I like ~ / I have ~）": "Animals (I like / I have)", "✨ 人(ひと)・性格(せいかく)のことば（He/She is ~）": "People & personality (He/She is ~)", "👨‍👩‍👧 家族(かぞく)・人(ひと)（This is my ~）": "Family & people (This is my ~)", "💼 しごとのことば（He is a ~ / She is a ~）": "Jobs (He/She is a ~)", "🍛 食(た)べ物(もの)（What food do you like?）": "Food (What food do you like?)", "🎨 色(いろ)（What color do you like?）": "Colors (What color do you like?)", "🔢 大(おお)きい数(かず)（How many ~?）": "Big numbers (How many ~?)", "📚 教科(きょうか)（What subject do you like?）": "School subjects", "🥤 のみもの": "Drinks", "🕘 時間(じかん)のことば（What time ~?）": "Time words (What time ~?)", "👉 命令文(めいれいぶん)でよく使(つか)う動詞(どうし)": "Command verbs", "📍 位置(いち)のことば（Look under the desk!）": "Position words (Look under the desk!)", "🌅 毎日(まいにち)の動作(どうさ)（3人称(にんしょう)で言(い)ってみよう！）": "Daily actions (he / she says!)", "⏰ ひんど・くりかえしのことば": "How-often words", "🏠 家(いえ)の中(なか)（He sleeps in his bed.）": "Around the house", "🎒 持(も)ち物(もの)（Whose ~ is this?）": "Belongings (Whose ~ is this?)", "🏷 「〜のもの」チーム（1語(ご)で答(こた)えられる！）": "Mine / yours words", "🏙 町(まち)のたてもの（Whose house is this?）": "Town buildings (Whose house is this?)", "🔄 動詞(どうし)の ing 変身表(へんしんひょう)": "Verb + ing change chart", "⚡ 「今(いま)」を表(あらわ)すことば": "Right-now words", "🔄 変身表(へんしんひょう)・その2": "Change chart, part 2", "😊 気持(きも)ち・様子(ようす)（look + ~）": "Feelings (look + ~)", "💭 したいこと（want to + ~）": "Things you want to do (want to ~)", "🎨 〜するのが好(す)き（like ~ing）": "Like + ~ing", "🌊 見(み)たいもの・自然(しぜん)（I want to see ~）": "Nature you want to see", "🔮 不規則動詞(ふきそくどうし)の変身表(へんしんひょう)": "Irregular verb change chart", "➕ 規則動詞(きそくどうし)（+ ed）": "Regular verbs (+ ed)", "📅 過去(かこ)の時(とき)ことば": "Past-time words", "🔮 不規則動詞(ふきそくどうし)・その2": "Irregular verbs, part 2", "🌟 感想(かんそう)のことば（How was it? に答(こた)えよう）": "How was it? words", "❄️ 冬(ふゆ)と旅(たび)のことば": "Winter & travel words", "🕰 was / were の選(えら)び方(かた)": "Choosing was / were", "🎪 学校行事(がっこうぎょうじ)・思(おも)い出(で)のことば（My best memory was ~）": "School events & memories", "🌍 世界(せかい)のことば": "World words", "💖 気持(きも)ちを伝(つた)えることば": "Sharing feelings", "🔗 文(ぶん)をつなぐことば": "Words that link sentences"};
 /* ── mode entry ── */
 $('m-word').addEventListener('click',async()=>{sfxTap();await detectTier();openPicker('word');});
 $('m-spell').addEventListener('click',async()=>{sfxTap();await detectTier();openPicker('spell');});
 $('m-trial').addEventListener('click',async()=>{
   sfxTap();await detectTier();
-  if(TIER==='C'||TIER==='D'){voicePopup(false,'This mode needs a mic + speech recognition / このモードには マイク＋おんせいにんしきが ひつようだよ','Play on Chrome, Edge, or Android! / Chrome・Edge・Android で あそんでね！');return;}
+  if(TIER==='C'||TIER==='D'){
+    var insecure=(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1');
+    if(insecure){
+      voicePopup(false,'Opened as a local file, so the mic is locked! ファイルから ひらくと、マイクが つかえないよ',
+        'Play at herosproof.com and it will work! ・ herosproof.com で あそべば つかえるよ！');
+    }else if(TIER==='D'){
+      voicePopup(false,'The microphone is blocked or unavailable… マイクが ブロックされているみたい…',
+        'Tap the 🔒 in the address bar → allow Microphone! ・ アドレスバーの 🔒 → マイクを「許可(きょか)」してね！');
+    }else{
+      voicePopup(false,'This device has no speech recognition… この端末(たんまつ)には おんせいにんしき が ないみたい…',
+        'Chrome / Edge on Android or PC works best! ・ Chrome / Edge (Android・パソコン) なら つかえるよ！');
+    }
+    return;}
   startRun('trial',SQ_SPELLS.filter(x=>x.a&&x.en.split(' ').length<=8),7,true);
 });
 function openPicker(mode){
   show('picker');
   const grid=$('pick-grid');grid.innerHTML='';
   if(mode==='word'){
-    $('pick-title').textContent='Choose a category! / カテゴリを えらぼう！';
+    $('pick-title').textContent='カテゴリを えらぼう！';
     const cats=[...new Set(SQ_WORDS.map(w=>w.c))];
-    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 All Mix / ぜんぶミックス<small>'+SQ_WORDS.length+' words / 語</small>';
+    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 ぜんぶミックス<small>'+SQ_WORDS.length+'語</small>';
     all.addEventListener('click',()=>{sfxTap();startRun('word',SQ_WORDS,10,false);});
     grid.appendChild(all);
     cats.forEach(c=>{
       const n=SQ_WORDS.filter(w=>w.c===c).length;
-      const b=document.createElement('button');b.className='pick-btn';b.innerHTML=ruby(c)+(CAT_EN[c]?'<small style="display:block;margin-top:2px;">'+CAT_EN[c]+'</small>':'')+'<small>'+n+' words / 語</small>';
+      const b=document.createElement('button');b.className='pick-btn';b.innerHTML=ruby(c)+'<small>'+n+'語</small>';
       b.addEventListener('click',()=>{sfxTap();startRun('word',SQ_WORDS.filter(w=>w.c===c),Math.min(10,n),false);});
       grid.appendChild(b);
     });
   }else{
-    $('pick-title').textContent='Choose a stage! / ステージを えらぼう！';
-    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 All Mix / ぜんぶミックス<small>'+SQ_SPELLS.length+' sentences / 文</small>';
+    $('pick-title').textContent='ステージを えらぼう！';
+    const all=document.createElement('button');all.className='pick-btn';all.innerHTML='🌟 ぜんぶミックス<small>'+SQ_SPELLS.length+'文</small>';
     all.addEventListener('click',()=>{sfxTap();startRun('spell',SQ_SPELLS,10,false);});
     grid.appendChild(all);
     for(let sid=0;sid<=11;sid++){
       const pool=SQ_SPELLS.filter(x=>x.s===sid);if(!pool.length)continue;
-      const b=document.createElement('button');b.className='pick-btn';b.innerHTML='Stage '+sid+' / ステージ'+sid+'<small>'+pool.length+' sentences / 文</small>';
+      const b=document.createElement('button');b.className='pick-btn';b.innerHTML='Stage '+sid+'<small>'+pool.length+'文</small>';
       b.addEventListener('click',()=>{sfxTap();startRun('spell',pool,10,false);});
       grid.appendChild(b);
     }
@@ -497,8 +478,6 @@ function startRun(mode,pool,n,trial){
   $('trial-circle').classList.toggle('hidden',!trial);
   $('gauge-wrap').classList.toggle('hidden',trial);
   toastTier();
-  srFailA=0;srFailB=0;
-  howtoPopup();
   round();
 }
 function itemText(it){return it.w?it.w.replace(/\s*→\s*/g,', '):it.en;}
@@ -535,15 +514,15 @@ function round(){
     ${it.k?`<p class="q-yomi">${it.k} · /${it.p}/</p>`:''}
     <p class="q-jp">${ruby(it.m||it.jp||'')}</p>
     <div class="tools">
-      <button class="say-btn" id="b-model">🔊 Model / おてほん</button>
-      ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it! / いってみる！</button>':''}
-      ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Voice Check / はんてい</button><button class="echo-btn" id="b-rec">⏺ Record echo / エコーをのこす</button>':''}
-      ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ Record & compare / ろくおんして ききくらべ</button>':''}
-      ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ I said it out loud! / こえに だして よめたよ！</button>':''}
+      <button class="say-btn" id="b-model">🔊 おてほん</button>
+      ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it!・いってみる！</button>':''}
+      ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Judge・はんてい</button><button class="echo-btn" id="b-rec">⏺ Save echo・エコーをのこす</button>':''}
+      ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ ろくおんして ききくらべ</button>':''}
+      ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ こえに だして よめたよ！</button>':''}
     </div>
     <canvas id="wave" width="220" height="42" class="hidden"></canvas>
     <div id="round-out"></div>
-    <button class="skip-btn hidden" id="b-skip">Next / つぎへ →</button>
+    <button class="skip-btn hidden" id="b-skip">Next・つぎへ →</button>
   `;
   const model=$('b-model');
   model.addEventListener('click',()=>{sfxTap();zapEl(model);sayOrFile(it.w?('voice/word_'+wslug(it.w)+'.mp3'):'',itemText(it));});
@@ -558,51 +537,33 @@ function showSkipAfterFails(){if(state.attempts>=2&&!state.trial)$('b-skip').cla
 /* Tier A: recognize + record together */
 function attemptA(it,tgt){
   const btn=$('b-go');if(btn.classList.contains('rec'))return;
-  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening… / きいてるよ…';
+  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 きいてるよ…';
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
   startEcho();
-  listenOnceErr(alts=>{
-    btn.classList.remove('rec');btn.textContent='🎤 Say it! / いってみる！';
+  let recorderGotUsed=true;
+  listenOnce(alts=>{
+    btn.classList.remove('rec');btn.textContent='🎤 いってみる！';
     stopWave();wave.classList.add('hidden');stopEcho();
     if(!alts.length){
-      srFailA++;
-      if(srFailA>=2){
-        srFailA=0;demoteToB();
-        infoPopup('🔁','Switching to 2-Step Mode! / 2だんかいモードに きりかえ！',
-          'Your browser could not listen and record at the same time. From now on: first 🎤 Voice Check, then ⏺ record your echo!<br>きく と ろくおんが いっしょに できなかったみたい。これからは まず 🎤はんてい、つぎに ⏺エコーの 2だんかいで いこう！');
-        round();return;
-      }
-      $('round-out').innerHTML=srHint();return;
+      if(recorderGotUsed&&lastEchoURL===null&&!srBrokeOnce){srBrokeOnce=true;}
+      else if(srBrokeOnce){demoteToB();round();return;}
+      $('round-out').innerHTML='<p class="heardline">（きこえなかった…マイクのちかくで、もういちど！）</p>';return;
     }
-    srFailA=0;
     handleResult(it,tgt,alts,true);
   });
 }
 /* Tier B: judge pass (SR only) */
 function attemptJudge(it,tgt){
   const btn=$('b-judge');if(btn.classList.contains('rec'))return;
-  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening… / きいてるよ…';
-  releaseMic(); /* free the mic so SpeechRecognition can grab it; ⏺ re-acquires later */
-  listenOnceErr(alts=>{
-    btn.classList.remove('rec');btn.textContent='🎤 Voice Check / はんてい';
-    if(!alts.length){
-      srFailB++;
-      const fatal=/network|not-allowed|service-not-allowed|audio-capture/.test(lastSRError);
-      if(fatal||srFailB>=3){
-        srFailB=0;TIER='C';toastTier();
-        infoPopup('🎧','Switching to Echo Mode! / エコーモードに きりかえ！',
-          'Speech recognition is not working on this device, so YOU are the judge: ⏺ record, ▶️ compare your voice with Lumi, and tap ⭕ if you said it!<br>おんせいにんしきが うごかないみたい。⏺ろくおんして ルミと ききくらべ、いえたら ⭕を おしてね！');
-        round();return;
-      }
-      $('round-out').innerHTML=srHint();return;
-    }
-    srFailB=0;
+  sfxMicOn();btn.classList.add('rec');
+  listenOnce(alts=>{
+    btn.classList.remove('rec');
+    if(!alts.length){$('round-out').innerHTML='<p class="heardline">（きこえなかった…もういちど！）</p>';return;}
     handleResult(it,tgt,alts,false);
   });
 }
 /* echo-only recording (Tier B second pass / Tier C) */
-async function attemptEchoOnly(ms,tgt){
-  try{await getMic();}catch(e){$('round-out').innerHTML='<p class="heardline">(I need mic permission… allow it from the 🔒 icon! / マイクの きょかが ひつよう…🔒 から きょかしてね！)</p>';return;}
+function attemptEchoOnly(ms,tgt){
   sfxMicOn();
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
   state.onEchoReady=()=>{
@@ -610,7 +571,7 @@ async function attemptEchoOnly(ms,tgt){
     renderEchoRow(true);
     if(TIER==='C'&&tgt){
       $('round-out').insertAdjacentHTML('beforeend',
-        `<div class="tools"><button class="echo-btn" id="b-selfok">⭕ I said it! / いえた！</button><button class="echo-btn" id="b-selfng">🔁 Try again / もういちど</button></div>`);
+        `<div class="tools"><button class="echo-btn" id="b-selfok">⭕ いえた！</button><button class="echo-btn" id="b-selfng">🔁 もういちど</button></div>`);
       $('b-selfok').addEventListener('click',()=>{sfxGood();flashFX(false);pass(state.items[state.idx],tgt,['(self check)']);});
       $('b-selfng').addEventListener('click',()=>{sfxTap();state.attempts++;showSkipAfterFails();});
     }
@@ -623,8 +584,8 @@ function renderEchoRow(fresh){
   if(!row){
     $('round-out').insertAdjacentHTML('beforeend',
       `<div class="echo-row" id="echo-row">
-        <button class="echo-btn" id="b-play-me">▶️ Your voice / きみのこえ</button>
-        <button class="echo-btn" id="b-play-lumi">🔊 Lumi / ルミ</button>
+        <button class="echo-btn" id="b-play-me">▶️ きみの こえ</button>
+        <button class="echo-btn" id="b-play-lumi">🔊 ルミ</button>
       </div>`);
     document.getElementById('b-play-me').addEventListener('click',()=>{sfxTap();playEcho();});
     document.getElementById('b-play-lumi').addEventListener('click',()=>{sfxTap();say(itemText(state.items[state.idx]));});
@@ -637,7 +598,7 @@ function handleResult(it,tgt,alts,haveEcho){
   const ok=fuzzyPass(alts,matchable);
   $('round-out').innerHTML=
     `<p class="diff">${diffHTML(tgt.en,alts)}</p>
-     <p class="heardline">The magic circle heard / まほうじんが きいたこと: <b>${alts[0]}</b></p>`;
+     <p class="heardline">まほうじんが きいたこと: <b>${alts[0]}</b></p>`;
   if(haveEcho)renderEchoRow();
   if(ok){
     sfxGood();flashFX(false);voicePopup(true,alts[0]);
@@ -656,7 +617,7 @@ function pass(it,tgt,alts,haveEcho){
   state.pass++;state.hits.push({en:tgt.en,ok:true,heard:(alts&&alts[0])||''});
   hud();
   const q=$('round-out');
-  q.insertAdjacentHTML('beforeend','<div style="text-align:center;"><button class="next-btn" id="b-next">Next / つぎへ →</button></div>');
+  q.insertAdjacentHTML('beforeend','<div style="text-align:center;"><button class="next-btn" id="b-next">Next・つぎへ →</button></div>');
   document.getElementById('b-next').addEventListener('click',()=>{sfxTap();state.idx++;round();});
 }
 /* ── results ── */
@@ -668,18 +629,18 @@ function finish(gameOver){
   if(state.trial&&!gameOver&&state.pass>=state.items.length){
     head=`<div style="text-align:center;">${segCircle(state.items.length,state.items.length)}
       <div class="res-head-en">ANCHOR TRIAL CLEAR!</div>
-      <p class="res-sub">The magic circle is complete — Voice Hero! 🎉<br>まほうじん、完成(かんせい)！こえの勇者(ゆうしゃ)だ！🎉</p></div>`;
+      <p class="res-sub">まほうじん、完成(かんせい)！こえの勇者(ゆうしゃ)だ！🎉</p></div>`;
     addStar('trial');flashFX(true);
   }else if(gameOver){
     head=`<div style="text-align:center;"><div style="font-size:2.4rem;">💜</div>
-      <p class="res-sub">Out of hearts… but your voice got stronger! Try again!<br>ハートが なくなっちゃった…でも こえは きたえられたよ！もういちど チャレンジ！</p></div>`;
+      <p class="res-sub">ハートが なくなっちゃった…でも こえは きたえられたよ！もういちど チャレンジ！</p></div>`;
   }else{
     head=`<div style="text-align:center;"><div style="font-size:2.4rem;">${pct>=80?'🌟':pct>=50?'✨':'💪'}</div>
-      <p class="res-sub">Clear rate / クリア率(りつ): <b style="font-size:1.35rem;color:var(--purple-dark);">${pct}%</b></p></div>`;
+      <p class="res-sub">クリア率(りつ) <b style="font-size:1.35rem;color:var(--purple-dark);">${pct}%</b> ！</p></div>`;
     if(pct>=80)addStar(state.mode);
     if(pct>=80)flashFX(true);
   }
-  const list=state.hits.map(h=>`<div class="res-item">${h.ok?'⭕':'△'} <b>${h.en}</b><br><span style="font-size:.72rem;">heard / きこえた: ${h.heard}</span></div>`).join('');
+  const list=state.hits.map(h=>`<div class="res-item">${h.ok?'⭕':'△'} <b>${h.en}</b><br><span style="font-size:.72rem;">きこえた: ${h.heard}</span></div>`).join('');
   $('res-body').innerHTML=head+list;
   $('res-again').onclick=()=>{sfxTap();show('game');state.idx=0;state.pass=0;state.hits=[];state.hearts=5;state.items=shufSlice(state.items.concat(),state.items.length);round();};
   $('res-home').onclick=()=>{sfxTap();goTitle();};
