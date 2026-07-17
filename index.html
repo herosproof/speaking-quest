@@ -205,6 +205,28 @@ button{cursor:pointer;font-family:inherit;}
 
 </div>
 <script>
+/* ── ?debug=1 overlay (project convention, ES5-safe, own block so it survives main-script errors) ── */
+window.hpDebugLog=window.hpDebugLog||function(){};
+(function(){
+  if(!/[?&]debug=1/.test(location.search))return;
+  var box=null;
+  function ensure(){
+    if(box)return box;
+    box=document.createElement('div');
+    box.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:#7a1f1f;color:#fff;font:12px/1.5 monospace;padding:10px 12px;border-radius:10px;max-height:45vh;overflow:auto;white-space:pre-wrap;';
+    (document.body||document.documentElement).appendChild(box);
+    return box;
+  }
+  window.hpDebugLog=function(m){var b=ensure();b.textContent+=(b.textContent?'\n':'')+m;b.scrollTop=b.scrollHeight;};
+  window.addEventListener('error',function(e){window.hpDebugLog('\u274C '+((e&&e.message)||'error')+' @'+((e&&e.lineno)||'?'));});
+  window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;window.hpDebugLog('\u274C promise: '+((r&&(r.message||String(r)))||'?'));});
+  window.addEventListener('DOMContentLoaded',function(){
+    var b=ensure();
+    if(!b.textContent){b.style.background='#1f5a2a';b.textContent='\u2705 no errors \u00B7 '+navigator.userAgent;}
+  });
+})();
+</script>
+<script>
 /* starfield */
 (function(){
   const sf=document.getElementById('starfield');
@@ -288,13 +310,13 @@ if(!SR){window.addEventListener('DOMContentLoaded',function(){
   document.body.insertBefore(b,document.body.firstChild);
 });}
 function listenOnce(onResult){
-  if(!SR){onResult([]);return;}
+  if(!SR){onResult([],'no-sr');return;}
   const r=new SR();r.lang='en-US';r.interimResults=false;r.maxAlternatives=4;
-  let got=false;
-  r.onresult=e=>{got=true;onResult([].map.call(e.results[0],a=>a.transcript));};
-  r.onerror=()=>{};
-  r.onend=()=>{if(!got)onResult([]);};
-  try{r.start();}catch(e){onResult([]);}
+  let got=false,err=null;
+  r.onresult=e=>{got=true;const a=[].map.call(e.results[0],x=>x.transcript);window.hpDebugLog('SR heard: '+a.join(' | '));onResult(a);};
+  r.onerror=e=>{err=(e&&e.error)||'error';window.hpDebugLog('SR error: '+err);};
+  r.onend=()=>{if(!got)onResult([],err||'no-speech');};
+  try{r.start();}catch(e){window.hpDebugLog('SR start failed: '+e);onResult([],'start-failed');}
   return r;
 }
 const CONTR={"i'm":"i am","im":"i am","you're":"you are","youre":"you are","he's":"he is","hes":"he is","she's":"she is","shes":"she is","it's":"it is","its":"it is","that's":"that is","thats":"that is","what's":"what is","whats":"what is","who's":"who is","whos":"who is","we're":"we are","they're":"they are","let's":"let us","lets":"let us","don't":"do not","dont":"do not","doesn't":"does not","doesnt":"does not","isn't":"is not","isnt":"is not","aren't":"are not","arent":"are not","can't":"can not","cant":"can not","cannot":"can not","won't":"will not","wont":"will not","didn't":"did not","didnt":"did not","wasn't":"was not","wasnt":"was not","weren't":"were not","werent":"were not","where's":"where is","wheres":"where is","here's":"here is","heres":"here is","we'd":"we would","wed":"we would","i'd":"i would"};
@@ -341,6 +363,11 @@ async function getMic(){
   micStream=await navigator.mediaDevices.getUserMedia({audio:true});
   return micStream;
 }
+/* CRITICAL for Android/iPad: SpeechRecognition uses the SYSTEM recognizer, which
+   needs exclusive mic access. If the page holds an open getUserMedia stream while
+   SR runs, Android Chrome fails with 'audio-capture'/'aborted' or silent no-result.
+   So: never keep the mic open — acquire per echo-recording, release right after. */
+function releaseMic(){try{if(micStream)micStream.getTracks().forEach(t=>t.stop());}catch(e){}micStream=null;}
 function startEcho(){
   try{
     recorder=new MediaRecorder(micStream);
@@ -350,6 +377,7 @@ function startEcho(){
       if(lastEchoURL)URL.revokeObjectURL(lastEchoURL);
       lastEchoURL=chunks.length?URL.createObjectURL(new Blob(chunks,{type:recorder.mimeType||'audio/webm'})):null;
       if(state.onEchoReady)state.onEchoReady();
+      releaseMic();
     };
     recorder.start();
   }catch(e){recorder=null;}
@@ -380,21 +408,33 @@ function startWave(canvas){
 function stopWave(){cancelAnimationFrame(waveRAF);}
 
 /* ── tier detection ──
-   A: recognize + record simultaneously · B: two-pass · C: echo only (no SR) · D: listen & repeat (no mic) */
-let TIER=null, srBrokeOnce=false;
+   A: SR judge + separate echo button · B: legacy two-pass (unreachable, kept for safety)
+   C: echo only (no SR) · D: listen & repeat (no mic).
+   NOTE: mic is probed for permission then RELEASED — see releaseMic() comment. */
+let TIER=null;
 async function detectTier(){
   if(TIER)return TIER;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){TIER='D';return TIER;}
-  try{await getMic();}catch(e){TIER='D';return TIER;}
+  try{await getMic();}catch(e){TIER='D';window.hpDebugLog('tier: D (mic denied)');return TIER;}
+  releaseMic();
   TIER=SR?'A':'C';
+  window.hpDebugLog('tier: '+TIER);
   return TIER;
 }
-function demoteToB(){if(TIER==='A'){TIER='B';toastTier();}}
+function demoteToC(){
+  if(TIER==='A'||TIER==='B'){
+    TIER='C';toastTier();
+    voicePopup(false,
+      'Switching to Echo Mode! Record your voice and compare with Lumi ✨ エコーモードに きりかえるね！ろくおんして ききくらべよう✨',
+      'Speech recognition keeps failing on this device・この端末(たんまつ)では おんせいにんしきが うまく うごかないみたい');
+    round();
+  }
+}
 function tierLabel(){return {A:'フルモード（判定＋エコー）',B:'2だんかいモード（判定→エコー）',C:'エコーモード（ききくらべ）',D:'リッスン＆リピート'}[TIER]||'';}
 function toastTier(){const el=$('hud-mid');if(el)el.textContent=tierLabel();}
 
 /* ── state ── */
-const state={mode:null,items:[],idx:0,pass:0,hits:[],hearts:5,trial:false,onEchoReady:null,attempts:0};
+const state={mode:null,items:[],idx:0,pass:0,hits:[],hearts:5,trial:false,onEchoReady:null,attempts:0,srFails:0};
 const STARKEY='hp_sq_stars';
 function stars(){try{return JSON.parse(localStorage.getItem(STARKEY)||'{}');}catch(e){return{}}}
 function addStar(k){const s=stars();s[k]=(s[k]||0)+1;localStorage.setItem(STARKEY,JSON.stringify(s));}
@@ -427,9 +467,12 @@ $('m-trial').addEventListener('click',async()=>{
   sfxTap();await detectTier();
   if(TIER==='C'||TIER==='D'){
     var insecure=(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1');
-    if(insecure){
+    if(location.protocol==='http:'){
+      voicePopup(false,'This page is not on HTTPS, so the mic is locked! https じゃないと、マイクが つかえないよ',
+        'Type https://herosproof.com in the address bar! ・ アドレスバーに https:// をつけて ひらいてね！');
+    }else if(insecure){
       voicePopup(false,'Opened as a local file, so the mic is locked! ファイルから ひらくと、マイクが つかえないよ',
-        'Play at herosproof.com and it will work! ・ herosproof.com で あそべば つかえるよ！');
+        'Play at https://herosproof.com and it will work! ・ herosproof.com で あそべば つかえるよ！');
     }else if(TIER==='D'){
       voicePopup(false,'The microphone is blocked or unavailable… マイクが ブロックされているみたい…',
         'Tap the 🔒 in the address bar → allow Microphone! ・ アドレスバーの 🔒 → マイクを「許可(きょか)」してね！');
@@ -503,7 +546,7 @@ function hud(){
 
 /* ── one round ── */
 function round(){
-  stopWave();state.attempts=0;state.onEchoReady=null;
+  stopWave();state.attempts=0;state.srFails=0;state.onEchoReady=null;
   if(state.idx>=state.items.length){return finish();}
   hud();
   const it=state.items[state.idx];
@@ -515,7 +558,7 @@ function round(){
     <p class="q-jp">${ruby(it.m||it.jp||'')}</p>
     <div class="tools">
       <button class="say-btn" id="b-model">🔊 おてほん</button>
-      ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it!・いってみる！</button>':''}
+      ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it!・いってみる！</button><button class="echo-btn" id="b-rec">⏺ Save echo・エコーをのこす</button>':''}
       ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Judge・はんてい</button><button class="echo-btn" id="b-rec">⏺ Save echo・エコーをのこす</button>':''}
       ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ ろくおんして ききくらべ</button>':''}
       ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ こえに だして よめたよ！</button>':''}
@@ -526,7 +569,7 @@ function round(){
   `;
   const model=$('b-model');
   model.addEventListener('click',()=>{sfxTap();zapEl(model);sayOrFile(it.w?('voice/word_'+wslug(it.w)+'.mp3'):'',itemText(it));});
-  if(TIER==='A')$('b-go').addEventListener('click',()=>attemptA(it,tgt));
+  if(TIER==='A'){$('b-go').addEventListener('click',()=>attemptA(it,tgt));$('b-rec').addEventListener('click',()=>attemptEchoOnly(3000));}
   if(TIER==='B'){$('b-judge').addEventListener('click',()=>attemptJudge(it,tgt));$('b-rec').addEventListener('click',()=>attemptEchoOnly(3000));}
   if(TIER==='C')$('b-rec').addEventListener('click',()=>attemptEchoOnly(3500,tgt));
   if(TIER==='D')$('b-self').addEventListener('click',()=>{sfxGood();flashFX(false);pass(it,tgt,['(self check)']);});
@@ -534,23 +577,35 @@ function round(){
 }
 function showSkipAfterFails(){if(state.attempts>=2&&!state.trial)$('b-skip').classList.remove('hidden');}
 
-/* Tier A: recognize + record together */
+/* Tier A: speech recognition ALONE — the mic must be free while SR runs
+   (Android/iPad system recognizer needs it). Echo is a separate ⏺ button. */
 function attemptA(it,tgt){
   const btn=$('b-go');if(btn.classList.contains('rec'))return;
-  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 きいてるよ…';
-  const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
-  startEcho();
-  let recorderGotUsed=true;
-  listenOnce(alts=>{
-    btn.classList.remove('rec');btn.textContent='🎤 いってみる！';
-    stopWave();wave.classList.add('hidden');stopEcho();
-    if(!alts.length){
-      if(recorderGotUsed&&lastEchoURL===null&&!srBrokeOnce){srBrokeOnce=true;}
-      else if(srBrokeOnce){demoteToB();round();return;}
-      $('round-out').innerHTML='<p class="heardline">（きこえなかった…マイクのちかくで、もういちど！）</p>';return;
-    }
-    handleResult(it,tgt,alts,true);
+  sfxMicOn();btn.classList.add('rec');btn.textContent='🎤 Listening…・きいてるよ…';
+  listenOnce((alts,err)=>{
+    btn.classList.remove('rec');btn.textContent='🎤 Say it!・いってみる！';
+    if(!alts.length){srFail(err);return;}
+    state.srFails=0;
+    handleResult(it,tgt,alts,false);
   });
+}
+/* friendly, bilingual, error-specific feedback — and auto-demote to Echo Mode
+   after 3 HARD failures (not just silence) */
+function srFail(err){
+  state.srFails=(state.srFails||0)+1;
+  let msg;
+  if(err==='not-allowed'||err==='service-not-allowed'){
+    msg='Mic permission is blocked… tap 🔒 in the address bar → allow Microphone!<br>マイクがブロックされてる…アドレスバーの 🔒 → マイクを「許可(きょか)」してね！';
+  }else if(err==='network'){
+    msg='Speech recognition needs the internet… check your Wi-Fi!<br>おんせいにんしきには インターネットが ひつよう…Wi-Fiを かくにんしてね！';
+  }else if(err==='audio-capture'||err==='aborted'){
+    msg='The mic was busy… wait a moment and try again!<br>マイクが いそがしかったみたい…すこし まってから もういちど！';
+  }else{
+    msg='I could not hear you… get close to the mic and try again!<br>きこえなかった…マイクのちかくで、もういちど！';
+  }
+  $('round-out').innerHTML='<p class="heardline">'+msg+'</p>';
+  state.attempts++;showSkipAfterFails();
+  if(state.srFails>=3&&err&&err!=='no-speech')demoteToC();
 }
 /* Tier B: judge pass (SR only) */
 function attemptJudge(it,tgt){
@@ -563,8 +618,12 @@ function attemptJudge(it,tgt){
   });
 }
 /* echo-only recording (Tier B second pass / Tier C) */
-function attemptEchoOnly(ms,tgt){
+async function attemptEchoOnly(ms,tgt){
   sfxMicOn();
+  try{await getMic();}catch(e){
+    $('round-out').innerHTML='<p class="heardline">The mic is blocked… tap 🔒 in the address bar → allow Microphone!<br>マイクが つかえない…アドレスバーの 🔒 → マイクを「許可(きょか)」してね！</p>';
+    return;
+  }
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
   state.onEchoReady=()=>{
     state.onEchoReady=null;
