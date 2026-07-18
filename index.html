@@ -144,6 +144,9 @@ button{cursor:pointer;font-family:inherit;}
 .vp-target{font-family:'Zen Maru Gothic',sans-serif;font-size:.85rem;color:var(--text-soft);margin:0 0 12px;}
 .vp-close{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,var(--gold-pale),var(--gold-light));color:var(--brown);border:2px solid var(--gold);border-radius:12px;padding:11px 22px;font-weight:900;font-size:1rem;box-shadow:0 3px 0 #a07820;}
 .djp{display:block;font-size:.86em;opacity:.85;margin-top:3px;line-height:1.8;}
+a.title-link{display:block;color:inherit;text-decoration:none;cursor:pointer;}
+a.home-btn{display:inline-block;margin-top:10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:.85rem;color:#e6d9ff;background:rgba(245,238,220,.12);border:2px solid rgba(200,160,224,.45);border-radius:999px;padding:6px 16px;text-decoration:none;}
+a.home-btn:active{transform:translateY(1px);}
 </style>
 </head>
 <body>
@@ -151,9 +154,12 @@ button{cursor:pointer;font-family:inherit;}
 <div class="container">
 
   <div class="title-header">
-    <img class="title-logo-img" src="logo.png" alt="Hero's Proof" onerror="this.style.display='none'">
-    <div class="title-game-name">SPEAKING QUEST<br>スピーキング・クエスト</div>
+    <a class="title-link" href="https://herosproof.com/" aria-label="Hero's Proof Home・ホームへ">
+      <img class="title-logo-img" src="logo.png" alt="Hero's Proof" onerror="this.style.display='none'">
+      <div class="title-game-name">SPEAKING QUEST<br>スピーキング・クエスト</div>
+    </a>
     <div class="title-sub">✦ Voice Training · こえのトレーニング ✦</div>
+    <a class="home-btn" href="https://herosproof.com/">🏠 Home・ホームへ</a>
     <div class="header-divider"></div>
   </div>
 
@@ -163,14 +169,14 @@ button{cursor:pointer;font-family:inherit;}
            onerror="this.onerror=null;this.src='lumi.png';">
       <div>
         <div class="sc-name">Lumi / ルミ</div>
-        <div class="sc-jp">Listen to the model, then say it into the mic! I'll record your voice so we can listen and compare, you and me 🎤✨<br><span class="djp">おてほんを きいて、マイクに むかって いってみて！きみの こえも きろくして、私(わたし)と ききくらべ できるよ</span></div>
+        <div class="sc-jp">Listen to the practice voice, then say it into the mic! Record your own voice too, so you can listen and compare 🎤✨<br><span class="djp">おてほんの こえを きいて、マイクに むかって いってみて！きみの こえも きろくして、ききくらべ できるよ</span></div>
       </div>
     </div>
     <button class="mode-btn gold" id="m-word"><span class="en">WORD ECHO 🎴</span><span class="ja">ことばエコー</span><span class="desc">One word at a time. Pick a category — 10 rounds!<span class="djp">たんごを 1つずつ。カテゴリを えらんで 10もん！</span></span></button>
     <button class="mode-btn" id="m-spell"><span class="en">SPELL ECHO 🔮</span><span class="ja">じゅもんエコー</span><span class="desc">Full sentences from the story. Pick a stage — 10 rounds!<span class="djp">ものがたりの フルセンテンス。ステージを えらんで 10もん！</span></span></button>
-    <button class="mode-btn trial" id="m-trial"><span class="en">ANCHOR TRIAL 👑</span><span class="ja">アンカーの試練(しれん)</span><span class="desc">Seven spells × five hearts. Complete the magic circle!<span class="djp">7つの じゅもん × ハート5こ。まほうじんを 完成(かんせい)させよ！</span></span></button>
+    <button class="mode-btn trial" id="m-trial"><span class="en">ANCHOR TRIAL 👑</span><span class="ja">アンカーの<ruby>試練<rt>しれん</rt></ruby></span><span class="desc">Seven spells × five hearts. Complete the magic circle!<span class="djp">7つの じゅもん × ハート5こ。まほうじんを <ruby>完成<rt>かんせい</rt></ruby>させよ！</span></span></button>
     <div class="stars-row" id="star-row"></div>
-    <p class="tiny">🔒 Your voice stays on this screen only — it is never sent anywhere, and it disappears when you close the page.<br><span class="djp">きみの こえは この画面(がめん)の中(なか)だけ。どこにも おくられません。とじたら きえます。</span></p>
+    <p class="tiny">🔒 Your voice stays on this screen only — it is never sent anywhere, and it disappears when you close the page.<br><span class="djp">きみの こえは この<ruby>画面<rt>がめん</rt></ruby>の<ruby>中<rt>なか</rt></ruby>だけ。どこにも おくられません。とじたら きえます。</span></p>
     <p class="tiny" id="tier-title" style="margin-top:2px;"></p>
   </div>
 
@@ -279,8 +285,8 @@ function voicePopup(ok,heard,target){
   d.innerHTML=`<div class="vp-card ${ok?'ok':'ng'}">
     <div class="vp-icon">${ok?'⭕':'△'}</div>
     <p class="vp-label">${ok?'まほうじんに とどいた！':'まほうじんが きいたのは…'}</p>
-    <p class="vp-heard">“${heard}”</p>
-    ${!ok&&target?`<p class="vp-target">おてほん: <b>${target}</b></p>`:''}
+    <p class="vp-heard">“${ruby(heard)}”</p>
+    ${!ok&&target?`<p class="vp-target">おてほん: <b>${ruby(target)}</b></p>`:''}
     <button class="vp-close">${ok?'やったね！':'もういちど！'}</button></div>`;
   document.body.appendChild(d);
   const close=()=>{if(d.parentNode)d.remove();};
@@ -290,12 +296,13 @@ function voicePopup(ok,heard,target){
 }
 function zapEl(el){el.classList.remove('zap');void el.offsetWidth;el.classList.add('zap');setTimeout(()=>el.classList.remove('zap'),400);}
 function wslug(w){return String(w).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');}
-function say(text,rate){try{
+function say(text,rate,onend){try{
   const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate||0.9;
   const vs=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.indexOf('en')===0);
   if(vs.length)u.voice=vs.find(v=>/Google US English|Samantha|Zira|Female/i.test(v.name))||vs[0];
+  if(onend)u.onend=onend;
   speechSynthesis.cancel();speechSynthesis.speak(u);
-}catch(e){}}
+}catch(e){if(onend)onend();}}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
 /* devices without speech recognition (old iPadOS <14.5, or managed iPads with
    Siri/Dictation disabled): never crash — explain kindly instead */
@@ -425,13 +432,13 @@ function demoteToC(){
   if(TIER==='A'||TIER==='B'){
     TIER='C';toastTier();
     voicePopup(false,
-      'Switching to Echo Mode! Record your voice and compare with Lumi ✨ エコーモードに きりかえるね！ろくおんして ききくらべよう✨',
+      'Switching to Echo Mode! Listen, repeat, record, and compare ✨ エコーモードに きりかえるね！きいて、まねして、ききくらべよう✨',
       'Speech recognition keeps failing on this device・この端末(たんまつ)では おんせいにんしきが うまく うごかないみたい');
     round();
   }
 }
-function tierLabel(){return {A:'フルモード（判定＋エコー）',B:'2だんかいモード（判定→エコー）',C:'エコーモード（ききくらべ）',D:'リッスン＆リピート'}[TIER]||'';}
-function toastTier(){const el=$('hud-mid');if(el)el.textContent=tierLabel();}
+function tierLabel(){return {A:'フルモード（判定(はんてい)＋エコー）',B:'2だんかいモード（判定(はんてい)→エコー）',C:'エコーモード（きいて まねして ききくらべ）',D:'リッスン＆リピート'}[TIER]||'';}
+function toastTier(){const el=$('hud-mid');if(el)el.innerHTML=ruby(tierLabel());}
 
 /* ── state ── */
 const state={mode:null,items:[],idx:0,pass:0,hits:[],hearts:5,trial:false,onEchoReady:null,attempts:0,srFails:0};
@@ -457,7 +464,7 @@ document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',(
 function renderStars(){
   const s=stars();const tot=Object.values(s).reduce((a,b)=>a+b,0);
   $('star-row').textContent=tot?('⭐ こえの証: '+tot):'';
-  $('tier-title').textContent=TIER?('🎛 いまのモード: '+tierLabel()):'';
+  $('tier-title').innerHTML=TIER?('🎛 いまのモード: '+ruby(tierLabel())):'';
 }
 
 /* ── mode entry ── */
@@ -528,7 +535,21 @@ function itemTarget(it){
   if(it.w){const parts=it.w.split('→').map(x=>x.trim()).filter(Boolean);return {en:itemText(it),accept:[itemText(it)].concat(parts)};}
   return {en:it.en,accept:it.a};
 }
-function itemVoiceFile(it){return it.w?('voice/word_'+wslug(it.w)+'.mp3'):('voice/spell_sq.mp3');}
+function itemVoiceFile(it){return it.w?('voice/word_'+wslug(it.w)+'.mp3'):('voice/spell_'+wslug(it.en)+'.mp3');}
+/* play the model (real file first, TTS fallback), then call cb — with a safety
+   timer because mobile speechSynthesis onend is unreliable */
+function sayModelThen(it,cb){
+  let done=false;const fin=()=>{if(done)return;done=true;if(cb)cb();};
+  const text=itemText(it);
+  try{
+    const a=new Audio(itemVoiceFile(it));
+    a.onended=fin;
+    a.onerror=()=>say(text,0.9,fin);
+    a.play().catch(()=>say(text,0.9,fin));
+  }catch(e){say(text,0.9,fin);}
+  setTimeout(fin,2500+120*text.length);
+}
+function estEchoMs(it){const n=itemText(it).split(' ').length;return Math.min(6000,Math.max(2600,1500+520*n));}
 function segCircle(lit,n){
   const r=60,c=2*Math.PI*r,seg=c/n,gap=5;
   let out=`<img class="circle-lumi ${lit>=n?'lit':''}" src="assets/char/story/lumi-chibi.png" alt="" onerror="this.style.display='none'">`;
@@ -560,19 +581,23 @@ function round(){
       <button class="say-btn" id="b-model">🔊 おてほん</button>
       ${TIER==='A'?'<button class="mic-btn big" id="b-go">🎤 Say it!・いってみる！</button><button class="echo-btn" id="b-rec">⏺ Save echo・エコーをのこす</button>':''}
       ${TIER==='B'?'<button class="mic-btn big" id="b-judge">🎤 Judge・はんてい</button><button class="echo-btn" id="b-rec">⏺ Save echo・エコーをのこす</button>':''}
-      ${TIER==='C'?'<button class="mic-btn big" id="b-rec">⏺ ろくおんして ききくらべ</button>':''}
-      ${TIER==='D'?'<button class="echo-btn" id="b-self">✅ こえに だして よめたよ！</button>':''}
+      ${TIER==='C'?'<button class="mic-btn big" id="b-lr">🎧 Listen & repeat!・きいて まねしよう！</button>':''}
+      ${TIER==='D'?'<button class="echo-btn" id="b-self">⭕ I said it!・こえに だして いえたよ！</button><button class="echo-btn" id="b-again-d">🔁 One more time・もういちど きく</button>':''}
     </div>
     <canvas id="wave" width="220" height="42" class="hidden"></canvas>
     <div id="round-out"></div>
     <button class="skip-btn hidden" id="b-skip">Next・つぎへ →</button>
   `;
   const model=$('b-model');
-  model.addEventListener('click',()=>{sfxTap();zapEl(model);sayOrFile(it.w?('voice/word_'+wslug(it.w)+'.mp3'):'',itemText(it));});
+  model.addEventListener('click',()=>{sfxTap();zapEl(model);sayOrFile(itemVoiceFile(it),itemText(it));});
   if(TIER==='A'){$('b-go').addEventListener('click',()=>attemptA(it,tgt));$('b-rec').addEventListener('click',()=>attemptEchoOnly(3000));}
   if(TIER==='B'){$('b-judge').addEventListener('click',()=>attemptJudge(it,tgt));$('b-rec').addEventListener('click',()=>attemptEchoOnly(3000));}
-  if(TIER==='C')$('b-rec').addEventListener('click',()=>attemptEchoOnly(3500,tgt));
-  if(TIER==='D')$('b-self').addEventListener('click',()=>{sfxGood();flashFX(false);pass(it,tgt,['(self check)']);});
+  if(TIER==='C')$('b-lr').addEventListener('click',()=>attemptListenRepeat(it,tgt));
+  if(TIER==='D'){
+    $('b-self').addEventListener('click',()=>{sfxGood();flashFX(false);pass(it,tgt,['(self check)']);});
+    $('b-again-d').addEventListener('click',()=>{sfxTap();state.attempts++;showSkipAfterFails();sayModelThen(it);});
+    sayModelThen(it); /* guided: model plays as the round opens */
+  }
   $('b-skip').addEventListener('click',()=>{sfxTap();state.hits.push({en:tgt.en,ok:false,heard:'(skip)'});state.idx++;round();});
 }
 function showSkipAfterFails(){if(state.attempts>=2&&!state.trial)$('b-skip').classList.remove('hidden');}
@@ -603,7 +628,7 @@ function srFail(err){
   }else{
     msg='I could not hear you… get close to the mic and try again!<br>きこえなかった…マイクのちかくで、もういちど！';
   }
-  $('round-out').innerHTML='<p class="heardline">'+msg+'</p>';
+  $('round-out').innerHTML='<p class="heardline">'+ruby(msg)+'</p>';
   state.attempts++;showSkipAfterFails();
   if(state.srFails>=3&&err&&err!=='no-speech')demoteToC();
 }
@@ -618,10 +643,11 @@ function attemptJudge(it,tgt){
   });
 }
 /* echo-only recording (Tier B second pass / Tier C) */
-async function attemptEchoOnly(ms,tgt){
+async function attemptEchoOnly(ms,tgt,onDone){
   sfxMicOn();
   try{await getMic();}catch(e){
-    $('round-out').innerHTML='<p class="heardline">The mic is blocked… tap 🔒 in the address bar → allow Microphone!<br>マイクが つかえない…アドレスバーの 🔒 → マイクを「許可(きょか)」してね！</p>';
+    $('round-out').innerHTML='<p class="heardline">'+ruby('The mic is blocked… tap 🔒 in the address bar → allow Microphone!<br>マイクが つかえない…アドレスバーの 🔒 → マイクを「許可(きょか)」してね！')+'</p>';
+    if(onDone)onDone();
     return;
   }
   const wave=$('wave');wave.classList.remove('hidden');startWave(wave);
@@ -630,13 +656,24 @@ async function attemptEchoOnly(ms,tgt){
     renderEchoRow(true);
     if(TIER==='C'&&tgt){
       $('round-out').insertAdjacentHTML('beforeend',
-        `<div class="tools"><button class="echo-btn" id="b-selfok">⭕ いえた！</button><button class="echo-btn" id="b-selfng">🔁 もういちど</button></div>`);
+        `<div class="tools"><button class="echo-btn" id="b-selfok">⭕ I said it!・いえた！</button><button class="echo-btn" id="b-selfng">🔁 One more time・もういちど</button></div>`);
       $('b-selfok').addEventListener('click',()=>{sfxGood();flashFX(false);pass(state.items[state.idx],tgt,['(self check)']);});
-      $('b-selfng').addEventListener('click',()=>{sfxTap();state.attempts++;showSkipAfterFails();});
+      $('b-selfng').addEventListener('click',()=>{sfxTap();state.attempts++;showSkipAfterFails();attemptListenRepeat(state.items[state.idx],tgt);});
     }
+    if(onDone)onDone();
   };
   startEcho();
   setTimeout(()=>{stopWave();wave.classList.add('hidden');stopEcho();},ms);
+}
+/* Tier C guided flow: 🔊 model → 🎙 your turn (auto-record) → compare → self-assess */
+function attemptListenRepeat(it,tgt){
+  const btn=$('b-lr');if(btn&&btn.disabled)return;if(btn)btn.disabled=true;
+  sfxTap();
+  $('round-out').innerHTML='<p class="heardline">🔊 Listen carefully…・よく きいてね…</p>';
+  sayModelThen(it,()=>{
+    $('round-out').innerHTML='<p class="heardline">🎙 Your turn — say it now!・きみの ばん！いってみて！</p>';
+    attemptEchoOnly(estEchoMs(it),tgt,()=>{if(btn)btn.disabled=false;});
+  });
 }
 function renderEchoRow(fresh){
   let row=document.getElementById('echo-row');
@@ -644,10 +681,10 @@ function renderEchoRow(fresh){
     $('round-out').insertAdjacentHTML('beforeend',
       `<div class="echo-row" id="echo-row">
         <button class="echo-btn" id="b-play-me">▶️ きみの こえ</button>
-        <button class="echo-btn" id="b-play-lumi">🔊 ルミ</button>
+        <button class="echo-btn" id="b-play-model">🔊 おてほん</button>
       </div>`);
     document.getElementById('b-play-me').addEventListener('click',()=>{sfxTap();playEcho();});
-    document.getElementById('b-play-lumi').addEventListener('click',()=>{sfxTap();say(itemText(state.items[state.idx]));});
+    document.getElementById('b-play-model').addEventListener('click',()=>{sfxTap();const it=state.items[state.idx];sayOrFile(itemVoiceFile(it),itemText(it));});
   }
 }
 /* shared result handling */
@@ -700,7 +737,7 @@ function finish(gameOver){
     if(pct>=80)flashFX(true);
   }
   const list=state.hits.map(h=>`<div class="res-item">${h.ok?'⭕':'△'} <b>${h.en}</b><br><span style="font-size:.72rem;">きこえた: ${h.heard}</span></div>`).join('');
-  $('res-body').innerHTML=head+list;
+  $('res-body').innerHTML=ruby(head+list);
   $('res-again').onclick=()=>{sfxTap();show('game');state.idx=0;state.pass=0;state.hits=[];state.hearts=5;state.items=shufSlice(state.items.concat(),state.items.length);round();};
   $('res-home').onclick=()=>{sfxTap();goTitle();};
 }
